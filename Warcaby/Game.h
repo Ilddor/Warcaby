@@ -17,10 +17,13 @@ private:
 	std::vector<CPiece> m_blackPieces;
 
 	EPieceColor m_moveFor;
+	EPieceColor m_playerColor;
 	
 	CPiece* m_selected;
 public:
 	void mousePressed(sf::Event& event);
+
+	void setPlayerColor(EPieceColor color);
 
 	void drawPieces(sf::RenderWindow& window);
 	void drawBackground(sf::RenderTarget& window);

@@ -4,20 +4,23 @@ void CGame::mousePressed(sf::Event& event)
 {
 	if(m_selected == nullptr)
 	{
-		if(m_moveFor == EPieceColor::WHITE && event.mouseButton.button == sf::Mouse::Left)
+		if(event.mouseButton.button == sf::Mouse::Left && m_moveFor == m_playerColor)
 		{
-			for(auto it = m_whitePieces.begin(); it != m_whitePieces.end(); ++it)
+			if(m_playerColor == EPieceColor::WHITE)
 			{
-				if(it->pressedOn(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
-					m_selected = it._Ptr;
+				for(auto it = m_whitePieces.begin(); it != m_whitePieces.end(); ++it)
+				{
+					if(it->pressedOn(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+						m_selected = it._Ptr;
+				}
 			}
-		}
-		else
-		{
-			for(auto it = m_blackPieces.begin(); it != m_blackPieces.end(); ++it)
+			else
 			{
-				if(it->pressedOn(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
-					m_selected = it._Ptr;
+				for(auto it = m_blackPieces.begin(); it != m_blackPieces.end(); ++it)
+				{
+					if(it->pressedOn(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+						m_selected = it._Ptr;
+				}
 			}
 		}
 	}
@@ -27,7 +30,16 @@ void CGame::mousePressed(sf::Event& event)
 			m_selected->setPosition(sf::Vector2f(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100));
 
 		m_selected = nullptr;
+		if(m_playerColor == EPieceColor::BLACK)
+			m_moveFor = EPieceColor::WHITE;
+		else
+			m_moveFor = EPieceColor::BLACK;
 	}
+}
+
+void CGame::setPlayerColor(EPieceColor color)
+{
+	m_playerColor = color;
 }
 
 void CGame::drawPieces(sf::RenderWindow& window)
@@ -50,6 +62,8 @@ void CGame::drawBackground(sf::RenderTarget& window)
 CGame::CGame(void)
 {
 	m_selected = nullptr;
+	m_moveFor = EPieceColor::WHITE;
+	m_playerColor = EPieceColor::WHITE;
 
 	m_backgroud.create(800,800, sf::Color(200, 200, 200));
 
