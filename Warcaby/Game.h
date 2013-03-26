@@ -23,6 +23,8 @@ private:
 public:
 	void mousePressed(sf::Event& event);
 
+	bool isMovePossible(sf::Vector2f pos);
+
 	void setPlayerColor(EPieceColor color);
 
 	void drawPieces(sf::RenderWindow& window);

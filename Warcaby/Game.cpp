@@ -27,14 +27,105 @@ void CGame::mousePressed(sf::Event& event)
 	else
 	{
 		if(m_backgroud.getPixel(event.mouseButton.x, event.mouseButton.y) == sf::Color(40, 40, 40))
-			m_selected->setPosition(sf::Vector2f(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100));
+		{
+			if(isMovePossible(sf::Vector2f(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100)))	//check if requested move is possible
+			{
+				sf::Vector2f newpos(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100);
+				sf::Vector2f prevpos(m_selected->getPosition());
+				if(abs(newpos.x - m_selected->getPosition().x) == 200)	//if the move was over 2 fields -> delete skipped piece
+				{
+					if(m_playerColor == EPieceColor::WHITE)
+					{
+						for(auto it = m_blackPieces.begin(); it != m_blackPieces.end(); ++it)
+						{
+							if(it->getPosition() == (prevpos + (newpos - prevpos)/2.f))
+							{
+								m_blackPieces.erase(it);
+								break;
+							}
+						}
+					}
+					else
+					{
+						for(auto it = m_whitePieces.begin(); it != m_whitePieces.end(); ++it)
+						{
+							if(it->getPosition() == (prevpos + (newpos - prevpos)/2.f))
+							{
+								m_whitePieces.erase(it);
+								break;
+							}
+						}
+					}
+				}
+
+				if(m_playerColor == EPieceColor::BLACK)
+					m_moveFor = EPieceColor::WHITE;
+				else
+					m_moveFor = EPieceColor::BLACK;
+
+				m_selected->setPosition(newpos);
+			}
+		}
 
 		m_selected = nullptr;
-		if(m_playerColor == EPieceColor::BLACK)
-			m_moveFor = EPieceColor::WHITE;
-		else
-			m_moveFor = EPieceColor::BLACK;
 	}
+}
+
+bool CGame::isMovePossible(sf::Vector2f pos)
+{
+	for(auto it = m_whitePieces.begin(); it != m_whitePieces.end(); ++it)
+	{
+		if(it->getPosition() == pos)			//chack if there is any white piece
+			return false;
+	}
+	for(auto it = m_blackPieces.begin(); it != m_blackPieces.end(); ++it)
+	{
+		if(it->getPosition() == pos)			//the same for black pieces
+			return false;
+	}
+
+	sf::Vector2f tmp = m_selected->getPosition();
+
+	if(m_playerColor == EPieceColor::WHITE)
+	{
+		if((pos - tmp) == sf::Vector2f(100,-100) || (pos - tmp) == sf::Vector2f(-100,-100))
+		{
+			return true;
+		}
+
+		if((pos - tmp) == sf::Vector2f(200,-200) || (pos - tmp) == sf::Vector2f(-200,-200))	//if player want to make move over 2 fields we need to check if in between is enemy piece
+		{
+			bool between = false;
+			for(auto it = m_blackPieces.begin(); it != m_blackPieces.end(); ++it)
+			{
+				if(it->getPosition() == (tmp + (pos - tmp)/2.f))
+					between = true;
+			}
+			if(between)
+				return true;
+		}
+	}
+	else
+	{
+		if((pos - tmp) == sf::Vector2f(100,100) || (pos - tmp) == sf::Vector2f(-100,100))
+		{
+			return true;
+		}
+
+		if((pos - tmp) == sf::Vector2f(200,200) || (pos - tmp) == sf::Vector2f(-200,200))	//if player want to make move over 2 fields we need to check if in between is enemy piece
+		{
+			bool between = false;
+			for(auto it = m_whitePieces.begin(); it != m_whitePieces.end(); ++it)
+			{
+				if(it->getPosition() == (tmp + (pos - tmp)/2.f))
+					between = true;
+			}
+			if(between)
+				return true;
+		}
+	}
+
+	return false;
 }
 
 void CGame::setPlayerColor(EPieceColor color)
@@ -92,6 +183,8 @@ CGame::CGame(void)
 			}
 		}
 	}
+
+	m_blackPieces.back().setPosition(sf::Vector2f(200,400));
 }
 
 

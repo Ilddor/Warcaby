@@ -17,6 +17,8 @@ public:
 
 	void draw(sf::RenderWindow& window);
 
+	sf::Vector2f getPosition();
+
 	void setPosition(sf::Vector2f position);
 
 	CPiece(bool color, bool king, sf::Vector2f position);

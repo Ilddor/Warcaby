@@ -14,6 +14,11 @@ void CPiece::draw(sf::RenderWindow& window)
 	window.draw(m_shape);
 }
 
+sf::Vector2f CPiece::getPosition()
+{
+	return m_shape.getPosition();
+}
+
 void CPiece::setPosition(sf::Vector2f position)
 {
 	m_shape.setPosition(position);
