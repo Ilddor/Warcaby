@@ -11,7 +11,10 @@ void CGame::mousePressed(sf::Event& event)
 				for(auto it = m_whitePieces.begin(); it != m_whitePieces.end(); ++it)
 				{
 					if(it->pressedOn(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+					{
 						m_selected = it._Ptr;
+						m_selected->setSelected(true);
+					}
 				}
 			}
 			else
@@ -19,7 +22,10 @@ void CGame::mousePressed(sf::Event& event)
 				for(auto it = m_blackPieces.begin(); it != m_blackPieces.end(); ++it)
 				{
 					if(it->pressedOn(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+					{
 						m_selected = it._Ptr;
+						m_selected->setSelected(true);
+					}
 				}
 			}
 		}
@@ -57,16 +63,19 @@ void CGame::mousePressed(sf::Event& event)
 						}
 					}
 				}
-
-				if(m_playerColor == EPieceColor::BLACK)
-					m_moveFor = EPieceColor::WHITE;
 				else
-					m_moveFor = EPieceColor::BLACK;
+				{
+					if(m_playerColor == EPieceColor::BLACK)
+						m_moveFor = EPieceColor::WHITE;
+					else
+						m_moveFor = EPieceColor::BLACK;
+				}
 
 				m_selected->setPosition(newpos);
 			}
 		}
 
+		m_selected->setSelected(false);
 		m_selected = nullptr;
 	}
 }
@@ -93,8 +102,8 @@ bool CGame::isMovePossible(sf::Vector2f pos)
 			return true;
 		}
 
-		if((pos - tmp) == sf::Vector2f(200,-200) || (pos - tmp) == sf::Vector2f(-200,-200))	//if player want to make move over 2 fields we need to check if in between is enemy piece
-		{
+		if((pos - tmp) == sf::Vector2f(200,-200) || (pos - tmp) == sf::Vector2f(-200,-200) || (pos - tmp) == sf::Vector2f(200,200) || (pos - tmp) == sf::Vector2f(-200,200))
+		{	//if player want to make move over 2 fields we need to check if in between is enemy piece
 			bool between = false;
 			for(auto it = m_blackPieces.begin(); it != m_blackPieces.end(); ++it)
 			{
@@ -112,8 +121,8 @@ bool CGame::isMovePossible(sf::Vector2f pos)
 			return true;
 		}
 
-		if((pos - tmp) == sf::Vector2f(200,200) || (pos - tmp) == sf::Vector2f(-200,200))	//if player want to make move over 2 fields we need to check if in between is enemy piece
-		{
+		if((pos - tmp) == sf::Vector2f(200,200) || (pos - tmp) == sf::Vector2f(-200,200) || (pos - tmp) == sf::Vector2f(200,-200) || (pos - tmp) == sf::Vector2f(-200,-200))
+		{	//if player want to make move over 2 fields we need to check if in between is enemy piece
 			bool between = false;
 			for(auto it = m_whitePieces.begin(); it != m_whitePieces.end(); ++it)
 			{
@@ -125,6 +134,11 @@ bool CGame::isMovePossible(sf::Vector2f pos)
 		}
 	}
 
+	return false;
+}
+
+bool CGame::isBeatingPossible(std::vector<CPiece>::iterator piece)
+{
 	return false;
 }
 
@@ -176,15 +190,16 @@ CGame::CGame(void)
 		{
 			if((i%2 == 0 && j%2 == 0) || (i%2 == 1 && j%2 == 1))
 			{
-				if(j < 3)
-					m_blackPieces.push_back(CPiece(false, false, sf::Vector2f(i*100, j*100)));
-				else if(j >= 5)
-					m_whitePieces.push_back(CPiece(true, false, sf::Vector2f(i*100, j*100)));
+				if(j < 3);
+					//m_blackPieces.push_back(CPiece(EPieceColor::BLACK, false, sf::Vector2f(i*100, j*100)));
+				else if(j >= 5);
+					//m_whitePieces.push_back(CPiece(EPieceColor::WHITE, false, sf::Vector2f(i*100, j*100)));
 			}
 		}
 	}
 
-	m_blackPieces.back().setPosition(sf::Vector2f(200,400));
+	m_blackPieces.push_back(CPiece(EPieceColor::BLACK, false, sf::Vector2f(200, 400)));
+	m_whitePieces.push_back(CPiece(EPieceColor::WHITE, false, sf::Vector2f(100, 300)));
 }
 
 

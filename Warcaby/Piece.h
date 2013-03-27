@@ -1,10 +1,13 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+
+#include "Misc.h"
+
 class CPiece
 {
 private:
-	bool m_color;
+	EPieceColor m_color;
 	bool m_king;
 
 	sf::CircleShape m_shape;
@@ -20,8 +23,9 @@ public:
 	sf::Vector2f getPosition();
 
 	void setPosition(sf::Vector2f position);
+	void setSelected(bool selected);
 
-	CPiece(bool color, bool king, sf::Vector2f position);
+	CPiece(EPieceColor, bool king, sf::Vector2f position);
 	~CPiece(void);
 };
 

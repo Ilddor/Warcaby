@@ -24,7 +24,25 @@ void CPiece::setPosition(sf::Vector2f position)
 	m_shape.setPosition(position);
 }
 
-CPiece::CPiece(bool color, bool king, sf::Vector2f position)
+void CPiece::setSelected(bool selected)
+{
+	if(selected)
+	{
+		if(m_color == EPieceColor::WHITE)
+			m_shape.setFillColor(sf::Color(200,200,255));
+		else
+			m_shape.setFillColor(sf::Color(0, 0, 55));
+	}
+	else
+	{
+		if(m_color == EPieceColor::WHITE)
+			m_shape.setFillColor(sf::Color::White);
+		else
+			m_shape.setFillColor(sf::Color::Black);
+	}
+}
+
+CPiece::CPiece(EPieceColor color, bool king, sf::Vector2f position)
 {
 	m_color = color;
 	m_king = king;
@@ -32,7 +50,7 @@ CPiece::CPiece(bool color, bool king, sf::Vector2f position)
 	//m_shape.setRadius(50.f);
 
 	m_shape = *(new sf::CircleShape(50.f));
-	if(m_color == true)
+	if(m_color == EPieceColor::WHITE)
 		m_shape.setFillColor(sf::Color::White);
 	else
 		m_shape.setFillColor(sf::Color::Black);

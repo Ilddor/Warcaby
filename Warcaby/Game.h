@@ -24,6 +24,7 @@ public:
 	void mousePressed(sf::Event& event);
 
 	bool isMovePossible(sf::Vector2f pos);
+	bool isBeatingPossible(std::vector<CPiece>::iterator piece);
 
 	void setPlayerColor(EPieceColor color);
 
