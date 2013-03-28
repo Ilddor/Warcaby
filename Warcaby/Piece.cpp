@@ -19,6 +19,11 @@ sf::Vector2f CPiece::getPosition()
 	return m_shape.getPosition();
 }
 
+EPieceColor CPiece::getColor()
+{
+	return m_color;
+}
+
 void CPiece::setPosition(sf::Vector2f position)
 {
 	m_shape.setPosition(position);

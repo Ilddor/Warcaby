@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C016E908-4A50-44B8-BA3B-29ACF5E3D45C}</ProjectGuid>
+    <ProjectGuid>{F528AF56-86E0-4F75-9328-BE466D1F9D4F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Warcaby</RootNamespace>
   </PropertyGroup>

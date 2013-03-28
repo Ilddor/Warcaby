@@ -13,8 +13,7 @@ private:
 	sf::Sprite m_drawableBackground;
 	sf::Texture m_texture;
 
-	std::vector<CPiece> m_whitePieces;
-	std::vector<CPiece> m_blackPieces;
+	std::vector<CPiece*> m_Pieces;
 
 	EPieceColor m_moveFor;
 	EPieceColor m_playerColor;

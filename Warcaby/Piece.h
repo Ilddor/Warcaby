@@ -21,6 +21,7 @@ public:
 	void draw(sf::RenderWindow& window);
 
 	sf::Vector2f getPosition();
+	EPieceColor getColor();
 
 	void setPosition(sf::Vector2f position);
 	void setSelected(bool selected);
