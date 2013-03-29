@@ -33,23 +33,44 @@ void CGame::mousePressed(sf::Event& event)
 				sf::Vector2f prevpos(m_selected->getPosition());
 				if(abs(newpos.x - prevpos.x) >= 200)	//if the move was over 2 fields or more -> delete skipped piece
 				{
-					sf::Vector2f erasePos;			//vector to subtract from new pos(for kings compatibility)
-					if(newpos.x - prevpos.x > 0)
-						erasePos.x = 100;
-					else
-						erasePos.x = -100;
-
-					if(newpos.y - prevpos.y > 0)
-						erasePos.y = 100;
-					else
-						erasePos.y = -100;
-
-					for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+					if(!m_selected->isKing())
 					{
-						if((*it)->getPosition() == newpos-erasePos)
+						sf::Vector2f erasePos;			//vector to subtract from new pos(for kings compatibility)
+						if(newpos.x - prevpos.x > 0)
+							erasePos.x = 100;
+						else
+							erasePos.x = -100;
+
+						if(newpos.y - prevpos.y > 0)
+							erasePos.y = 100;
+						else
+							erasePos.y = -100;
+
+						for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 						{
-							m_Pieces.erase(it);
-							break;
+							if((*it)->getPosition() == newpos-erasePos)
+							{
+								m_Pieces.erase(it);
+								break;
+							}
+						}
+					}
+					else
+					{
+						sf::Vector2f gap((newpos - prevpos).x/(abs((newpos - prevpos).x)/100), (newpos - prevpos).y/(abs((newpos - prevpos).y)/100));
+						sf::Vector2f erasePos = prevpos + gap;
+
+						while(erasePos != newpos)
+						{
+							for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+							{
+								if((*it)->getPosition() == erasePos)
+								{
+									m_Pieces.erase(it);
+									break;
+								}
+							}
+							erasePos += gap;
 						}
 					}
 				}
@@ -122,6 +143,7 @@ bool CGame::isMovePossible(sf::Vector2f pos, CPiece* piece)
 		{
 			sf::Vector2f gap((pos - tmp).x/(abs((pos - tmp).x)/100), (pos - tmp).y/(abs((pos - tmp).y)/100));
 			sf::Vector2f checkPos = tmp+gap;
+			int skipped = 0;
 
 			while(checkPos != pos)
 			{
@@ -131,10 +153,7 @@ bool CGame::isMovePossible(sf::Vector2f pos, CPiece* piece)
 					{
 						if((*it)->getColor() != piece->getColor())
 						{
-							if(checkPos == pos - gap)
-								return true;
-							else
-								return false;
+							++skipped;
 						}
 						else
 							return false;
@@ -142,6 +161,10 @@ bool CGame::isMovePossible(sf::Vector2f pos, CPiece* piece)
 				}
 				checkPos += gap;
 			}
+			if(skipped == 1)
+				return true;
+			else
+				return false;
 		}
 		else
 		{
