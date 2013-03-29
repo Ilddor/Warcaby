@@ -27,7 +27,7 @@ void CGame::mousePressed(sf::Event& event)
 			{
 				sf::Vector2f newpos(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100);
 				sf::Vector2f prevpos(m_selected->getPosition());
-				if(abs(newpos.x - m_selected->getPosition().x) == 200)	//if the move was over 2 fields -> delete skipped piece
+				if(abs(newpos.x - prevpos.x) == 200)	//if the move was over 2 fields -> delete skipped piece
 				{
 					for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 					{
@@ -38,15 +38,20 @@ void CGame::mousePressed(sf::Event& event)
 						}
 					}
 				}
-				else
-				{
-					if(m_playerColor == EPieceColor::BLACK)
-						m_moveFor = EPieceColor::WHITE;
-					else
-						m_moveFor = EPieceColor::BLACK;
-				}
 
-				m_selected->setPosition(newpos);
+				if(abs(newpos.x - prevpos.x) == 200 || !m_multiBeating)
+					m_selected->setPosition(newpos);
+
+				if(isBeatingPossible(m_selected) && abs(newpos.x - prevpos.x) == 200)	//if beated something check if there
+				{																		//is possibiliy to multibeat
+					m_multiBeating = true;
+					return;
+				}
+				else	//if not, change movefor
+				{
+					changeTurn();
+					m_multiBeating = false;
+				}
 			}
 		}
 
@@ -82,16 +87,25 @@ bool CGame::isMovePossible(sf::Vector2f pos)
 	return false;
 }
 
-bool CGame::isBeatingPossible(std::vector<CPiece>::iterator piece)
+bool CGame::isBeatingPossible(CPiece* piece)
 {
 	sf::Vector2f pos = piece->getPosition();
 
-	if(piece->getColor() == EPieceColor::WHITE)
+	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 	{
-
-	}
-	else
-	{
+		if(((*it)->getPosition() == pos + sf::Vector2f(100,100) ||
+			(*it)->getPosition() == pos + sf::Vector2f(100,-100) ||
+			(*it)->getPosition() == pos + sf::Vector2f(-100,-100) ||
+			(*it)->getPosition() == pos + sf::Vector2f(-100,100)) &&
+			(*it)->getColor() != piece->getColor())
+		{
+			for(auto it2 = m_Pieces.begin(); it2 != m_Pieces.end(); ++it2)
+			{
+				if((*it2)->getPosition() == pos + (((*it)->getPosition() - pos)*2.f))
+					return false;
+			}
+			return true;
+		}
 	}
 	return false;
 }
@@ -99,6 +113,22 @@ bool CGame::isBeatingPossible(std::vector<CPiece>::iterator piece)
 void CGame::setPlayerColor(EPieceColor color)
 {
 	m_playerColor = color;
+}
+
+void CGame::changeTurn()
+{
+	if(m_playerColor == EPieceColor::BLACK)
+		m_moveFor = EPieceColor::WHITE;
+	else
+		m_moveFor = EPieceColor::BLACK;
+}
+
+void CGame::checkForKings()
+{
+	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+	{
+
+	}
 }
 
 void CGame::drawPieces(sf::RenderWindow& window)
@@ -117,6 +147,7 @@ void CGame::drawBackground(sf::RenderTarget& window)
 CGame::CGame(void)
 {
 	m_selected = nullptr;
+	m_multiBeating = false;
 	m_moveFor = EPieceColor::WHITE;
 	m_playerColor = EPieceColor::WHITE;
 
@@ -148,9 +179,12 @@ CGame::CGame(void)
 		}
 	}
 
-	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(200, 400)));
-	m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(100, 300)));
-	m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(100, 500)));
+	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));
+	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(300, 100)));
+	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(500, 100)));
+	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(500, 300)));
+	m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(0, 200)));
+	m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(0, 400)));
 }
 
 

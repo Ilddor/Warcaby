@@ -19,13 +19,17 @@ private:
 	EPieceColor m_playerColor;
 	
 	CPiece* m_selected;
+	bool m_multiBeating;
 public:
 	void mousePressed(sf::Event& event);
 
 	bool isMovePossible(sf::Vector2f pos);
-	bool isBeatingPossible(std::vector<CPiece>::iterator piece);
+	bool isBeatingPossible(CPiece* piece);
 
 	void setPlayerColor(EPieceColor color);
+
+	void changeTurn();
+	void checkForKings();
 
 	void drawPieces(sf::RenderWindow& window);
 	void drawBackground(sf::RenderTarget& window);
