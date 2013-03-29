@@ -11,6 +11,8 @@ int main()
 
 	CGame GameObject;
 
+	GameObject.setPvP(true);
+
 	while(Window.isOpen())
 	{
 		while(Window.pollEvent(Event))

@@ -12,6 +12,8 @@ void CPiece::draw(sf::RenderWindow& window)
 {
 	//window.draw(m_sprite);
 	window.draw(m_shape);
+	if(m_king)
+		window.draw(m_point);
 }
 
 sf::Vector2f CPiece::getPosition()
@@ -24,9 +26,15 @@ EPieceColor CPiece::getColor()
 	return m_color;
 }
 
+bool CPiece::isKing()
+{
+	return m_king;
+}
+
 void CPiece::setPosition(sf::Vector2f position)
 {
 	m_shape.setPosition(position);
+	m_point.setPosition(position + sf::Vector2f(40,40));
 }
 
 void CPiece::setSelected(bool selected)
@@ -47,6 +55,11 @@ void CPiece::setSelected(bool selected)
 	}
 }
 
+void CPiece::setKing()
+{
+	m_king = true;
+}
+
 CPiece::CPiece(EPieceColor color, bool king, sf::Vector2f position)
 {
 	m_color = color;
@@ -60,6 +73,10 @@ CPiece::CPiece(EPieceColor color, bool king, sf::Vector2f position)
 	else
 		m_shape.setFillColor(sf::Color::Black);
 	m_shape.setPosition(position);
+
+	m_point.setRadius(10.f);
+	m_point.setFillColor(sf::Color::Red);
+	m_point.setPosition(position + sf::Vector2f(40,40));
 }
 
 CPiece::CPiece(void)

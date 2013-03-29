@@ -11,6 +11,7 @@ private:
 	bool m_king;
 
 	sf::CircleShape m_shape;
+	sf::CircleShape m_point;
 
 	sf::Vector2f m_position;
 
@@ -22,9 +23,11 @@ public:
 
 	sf::Vector2f getPosition();
 	EPieceColor getColor();
+	bool isKing();
 
 	void setPosition(sf::Vector2f position);
 	void setSelected(bool selected);
+	void setKing();
 
 	CPiece(EPieceColor, bool king, sf::Vector2f position);
 	~CPiece(void);

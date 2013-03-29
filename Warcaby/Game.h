@@ -17,19 +17,23 @@ private:
 
 	EPieceColor m_moveFor;
 	EPieceColor m_playerColor;
+	bool m_pvp;
 	
 	CPiece* m_selected;
 	bool m_multiBeating;
 public:
 	void mousePressed(sf::Event& event);
 
-	bool isMovePossible(sf::Vector2f pos);
+	bool isMovePossible(sf::Vector2f pos, CPiece* piece);
 	bool isBeatingPossible(CPiece* piece);
 
 	void setPlayerColor(EPieceColor color);
+	void setPvP(bool mode);
 
 	void changeTurn();
 	void checkForKings();
+	bool checkIfBeating();
+	bool checkForWin();
 
 	void drawPieces(sf::RenderWindow& window);
 	void drawBackground(sf::RenderTarget& window);
