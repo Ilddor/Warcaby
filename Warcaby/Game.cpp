@@ -14,10 +14,13 @@ void CGame::mousePressed(sf::Event& event)
 			{
 				if((*it)->pressedOn(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
 				{
-					if((*it)->getColor() == m_playerColor && isBeatingPossible(*it))
+					if((*it)->getColor() == m_playerColor)
 					{
-						m_selected = (*it);
-						m_selected->setSelected(true);
+						if(!beatingPossible || isBeatingPossible(*it))
+						{
+							m_selected = (*it);
+							m_selected->setSelected(true);
+						}
 					}
 				}
 			}
