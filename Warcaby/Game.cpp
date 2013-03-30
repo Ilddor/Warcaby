@@ -34,6 +34,7 @@ void CGame::mousePressed(sf::Event& event)
 			{
 				sf::Vector2f newpos(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100);
 				sf::Vector2f prevpos(m_selected->getPosition());
+				bool normalMove = true;
 				if(abs(newpos.x - prevpos.x) >= 200)	//if the move was over 2 fields or more -> delete skipped piece
 				{
 					if(!m_selected->isKing())
@@ -54,6 +55,7 @@ void CGame::mousePressed(sf::Event& event)
 							if((*it)->getPosition() == newpos-erasePos)
 							{
 								m_Pieces.erase(it);
+								normalMove = false;
 								break;
 							}
 						}
@@ -70,6 +72,7 @@ void CGame::mousePressed(sf::Event& event)
 								if((*it)->getPosition() == erasePos)
 								{
 									m_Pieces.erase(it);
+									normalMove = false;
 									break;
 								}
 							}
@@ -79,13 +82,14 @@ void CGame::mousePressed(sf::Event& event)
 				}
 
 				if(abs(newpos.x - prevpos.x) >= 200 || !m_multiBeating)
+				//if(!m_multiBeating)
 				{
 					m_selected->setPosition(newpos);
 					checkForKings();
 				}
 
-				if(isBeatingPossible(m_selected))	//if beated something check if there
-				{																		//is possibiliy to multibeat
+				if(isBeatingPossible(m_selected) && !normalMove)
+				{											//if beated something check if there is possibiliy to multibeat
 					m_multiBeating = true;
 					return;
 				}
@@ -142,7 +146,7 @@ bool CGame::isMovePossible(sf::Vector2f pos, CPiece* piece)
 	}
 	else
 	{
-		if(abs((pos - tmp).x) >= 200)
+		if(abs((pos - tmp).x) >= 200 && abs((pos - tmp).x) == abs((pos - tmp).y))
 		{
 			sf::Vector2f gap((pos - tmp).x/(abs((pos - tmp).x)/100), (pos - tmp).y/(abs((pos - tmp).y)/100));
 			sf::Vector2f checkPos = tmp+gap;
@@ -164,12 +168,12 @@ bool CGame::isMovePossible(sf::Vector2f pos, CPiece* piece)
 				}
 				checkPos += gap;
 			}
-			if(skipped == 1)
+			if(skipped <= 1)
 				return true;
 			else
 				return false;
 		}
-		else
+		else if(abs((pos - tmp).x) == 100 && abs((pos - tmp).x) == abs((pos - tmp).y))
 		{
 			return true;
 		}
@@ -192,18 +196,22 @@ bool CGame::isBeatingPossible(CPiece* piece)
 				(*it)->getPosition() == pos + sf::Vector2f(-100,100)) &&
 				(*it)->getColor() != piece->getColor())
 			{
+				bool cont = false;
 				for(auto it2 = m_Pieces.begin(); it2 != m_Pieces.end(); ++it2)
 				{
 					if((pos + (((*it)->getPosition() - pos)*2.f)).x < 0 ||
 					   (pos + (((*it)->getPosition() - pos)*2.f)).x > 700 ||
 					   (pos + (((*it)->getPosition() - pos)*2.f)).y < 0 ||
 					   (pos + (((*it)->getPosition() - pos)*2.f)).y > 700)
-					    return false;
+					    cont = true;
 
 					if((*it2)->getPosition() == pos + (((*it)->getPosition() - pos)*2.f))
-						return false;
+						cont = true;
 				}
-				return true;
+				if(cont)
+					continue;
+				else
+					return true;
 			}
 		}
 		return false;
@@ -218,6 +226,11 @@ bool CGame::isBeatingPossible(CPiece* piece)
 				{
 					sf::Vector2f dir(((*it)->getPosition() - piece->getPosition()).x/(abs(((*it)->getPosition() - piece->getPosition()).x)/100),
 								((*it)->getPosition() - piece->getPosition()).y/(abs(((*it)->getPosition() - piece->getPosition()).y)/100));
+					if(((*it)->getPosition() + dir).x < 0 ||
+					   ((*it)->getPosition() + dir).x > 700 ||
+					   ((*it)->getPosition() + dir).y < 0 ||
+					   ((*it)->getPosition() + dir).y > 700)
+						break;
 					if(isMovePossible((*it)->getPosition() + dir, piece))
 						return true;
 				}
@@ -339,20 +352,20 @@ CGame::CGame(void)
 		{
 			if((i%2 == 0 && j%2 == 0) || (i%2 == 1 && j%2 == 1))
 			{
-				/*if(j < 3)
+				if(j < 3)
 					m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(i*100, j*100)));
 				else if(j >= 5)
-					m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(i*100, j*100)));*/
+					m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(i*100, j*100)));
 			}
 		}
 	}
 
-	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));
+	/*m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));
 	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(300, 100)));
 	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(600, 200)));
 	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(500, 500)));
 	m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(0, 200)));
-	m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(200, 200)));
+	m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(200, 200)));*/
 }
 
 
