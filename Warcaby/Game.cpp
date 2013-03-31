@@ -350,12 +350,12 @@ CGame::CGame(void)
 	{
 		for(int j = 0; j < 8; ++j)
 		{
-			if((i%2 == 0 && j%2 == 0) || (i%2 == 1 && j%2 == 1))
+			if((j%2 == 0 && i%2 == 0) || (j%2 == 1 && i%2 == 1))
 			{
-				if(j < 3)
-					m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(i*100, j*100)));
-				else if(j >= 5)
-					m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(i*100, j*100)));
+				if(i < 3)
+					m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(j*100, i*100)));
+				else if(i >= 5)
+					m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(j*100, i*100)));
 			}
 		}
 	}

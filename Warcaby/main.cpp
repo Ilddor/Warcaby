@@ -13,6 +13,8 @@ int main()
 
 	GameObject.setPvP(true);
 
+	std::cout << sizeof(int*) << std::endl;
+
 	while(Window.isOpen())
 	{
 		while(Window.pollEvent(Event))

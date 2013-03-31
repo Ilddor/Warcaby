@@ -5,6 +5,7 @@
 
 #include "Piece.h"
 #include "Misc.h"
+#include "Set.h"
 
 class CGame
 {
