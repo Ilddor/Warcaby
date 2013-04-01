@@ -23,7 +23,7 @@ private:
 	CPiece* m_selected;
 	bool m_multiBeating;
 
-	CBotMemory mem;
+	CBotMemory mem, data;
 public:
 	void mousePressed(sf::Event& event);
 

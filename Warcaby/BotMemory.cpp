@@ -1,8 +1,37 @@
 #include <fstream>
+#include <sstream>
 
 #include "BotMemory.h"
 #include "Dependencies\rapidxml.hpp"
-#include "Dependencies\rapidxml_utils.hpp"
+
+char* TextFileRead(const char* fn) 
+{
+	FILE *fp;
+	char *content = NULL;
+
+	int count=0;
+
+	if (fn != NULL) 
+	{
+		fp = fopen(fn,"rt");
+
+		if (fp != NULL) 
+		{
+			fseek(fp, 0, SEEK_END);
+			count = ftell(fp);
+			rewind(fp);
+
+			if (count > 0) 
+			{
+				content = (char *)malloc(sizeof(char) * (count+1));
+				count = fread(content,sizeof(char),count,fp);
+				content[count] = '\0';
+			}
+			fclose(fp);
+		}
+	}
+	return content;
+}
 
 void CBotMemory::addMoveToLastSet(int srcx, int srcy, int dstx, int dsty, bool winning, bool color)
 {
@@ -16,46 +45,67 @@ void CBotMemory::addSet(const std::vector<CPiece*>& board)
 
 void CBotMemory::saveToFile(std::string path)
 {
+	std::fstream file(path, std::ios::out);
+
+	file << "<memory>" << std::endl;
+
+	for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
+	{
+		file << "	<set ";
+		file << "part1=\"" << (*it)->getPart1() << "\" ";
+		file << "part2=\"" << (*it)->getPart2() << "\" ";
+		file << "part3=\"" << (*it)->getPart3() << "\"";
+		if(!(*it)->getMoves().empty())
+			file << ">" << std::endl;
+		else
+			file << "/>" << std::endl;
+
+		for(auto it2 = (*it)->getMoves().begin(); it2 != (*it)->getMoves().end(); ++it2)
+		{
+			file << "		<move ";
+			file << "src=\"" << (int)(*it2)->getSource() << "\" ";
+			file << "dst=\"" << (int)(*it2)->getDestination() << "\" ";
+			file << "info=\"" << (int)(*it2)->getInfo() << "\"";
+			file << "/>" << std::endl;
+		}
+
+		if(!(*it)->getMoves().empty())
+			file << "	</set>" << std::endl;
+	}
+
+	file << "</memory>";
+
+	file.close();
 }
 
 void CBotMemory::loadFromFile(std::string path)
 {
-	rapidxml::file<> xmlFile(path.c_str());
+	char* data = TextFileRead(path.c_str());
 	rapidxml::xml_document<> doc;
-	doc.parse<0>(xmlFile.data());
+	doc.parse<0>(data);
 
 	rapidxml::xml_node<>* root = doc.first_node("memory");
-
-	rapidxml::xml_node<>* set = root->first_node("set");
-
-	rapidxml::xml_node<>* move;
 
 	int p1, p2, p3;
 
 	char src, dst, info;
 
-	while(set != 0)
+	for(auto set = root->first_node("set"); set != 0; set = set->next_sibling())
 	{
-		p1 = std::strtol(set->first_node("part1")->first_attribute("value")->value(), 0, 10);
-		p2 = std::strtol(set->first_node("part2")->first_attribute("value")->value(), 0, 10);
-		p3 = std::strtol(set->first_node("part3")->first_attribute("value")->value(), 0, 10);
-
-		move = set->first_node("moves")->first_node("move");
+		p1 = std::strtol(set->first_attribute("part1")->value(), 0, 10);
+		p2 = std::strtol(set->first_attribute("part2")->value(), 0, 10);
+		p3 = std::strtol(set->first_attribute("part3")->value(), 0, 10);
 
 		m_memory.push_back(new CSet(p1, p2, p3));
 		
-		while(move != 0)
+		for(auto move = set->first_node("move"); move != 0; move = move->next_sibling())
 		{
-			src = set->first_attribute("src")->value()[0];
-			dst = set->first_attribute("dst")->value()[0];
-			info = set->first_attribute("info")->value()[0];
+			src = (char)atoi(move->first_attribute("src")->value());
+			dst = (char)atoi(move->first_attribute("dst")->value());
+			info = (char)atoi(move->first_attribute("info")->value());
 
 			m_memory.back()->addMove(src, dst, info);
-
-			move = move->next_sibling();
 		}
-
-		set = set->next_sibling();
 	}
 }
 

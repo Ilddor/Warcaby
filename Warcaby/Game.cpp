@@ -90,6 +90,7 @@ void CGame::mousePressed(sf::Event& event)
 						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, true);
 					else
 						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, false);
+					mem.addSet(m_Pieces);
 
 					checkForKings();
 				}
@@ -260,6 +261,7 @@ void CGame::changeTurn()
 {
 	if(checkForWin())
 	{
+		mem.saveToFile("data.xml");
 		std::cout << "Wygral kolor: ";
 		if(m_moveFor == EPieceColor::WHITE)
 			std::cout << "bialy" << std::endl;
@@ -268,8 +270,6 @@ void CGame::changeTurn()
 		return;
 	}
 	//checkIfNoBeating();
-
-	mem.addSet(m_Pieces);
 
 	if(m_playerColor == EPieceColor::BLACK)
 		m_moveFor = EPieceColor::WHITE;
@@ -368,6 +368,7 @@ CGame::CGame(void)
 		}
 	}
 
+	data.loadFromFile("data.xml");
 	mem.addSet(m_Pieces);
 
 	/*m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));

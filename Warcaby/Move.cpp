@@ -13,6 +13,21 @@ bool CMove::getColor()
 		return false;
 }
 
+char CMove::getSource()
+{
+	return m_source;
+}
+
+char CMove::getDestination()
+{
+	return m_destination;
+}
+
+char CMove::getInfo()
+{
+	return m_info;
+}
+
 CMove::CMove(char src, char dst, char info)
 {
 	m_source = src;

@@ -1,5 +1,25 @@
 #include "Set.h"
 
+const std::list<CMove*>& CSet::getMoves()
+{
+	return m_moves;
+}
+
+int CSet::getPart1()
+{
+	return m_part1;
+}
+
+int CSet::getPart2()
+{
+	return m_part2;
+}
+
+int CSet::getPart3()
+{
+	return m_part3;
+}
+
 void CSet::setColorWinning(bool color)
 {
 	for(auto it = m_moves.begin(); it != m_moves.end(); ++it)

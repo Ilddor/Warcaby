@@ -15,6 +15,11 @@ private:
 
 	CSet(void);
 public:
+	const std::list<CMove*>& getMoves();
+	int getPart1();
+	int getPart2();
+	int getPart3();
+
 	void setColorWinning(bool color);	//method can be only used on temporary(1 round) memory
 	//because used on full memory would break all data(bot would think that all moves of this color was winning moves
 	//if you use it on full memory I will find you and I will kill you

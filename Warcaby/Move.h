@@ -10,6 +10,9 @@ public:
 	void setWinning();
 
 	bool getColor();	//true for white, false for black
+	char getSource();
+	char getDestination();
+	char getInfo();
 
 	CMove(char src, char dst, char info);
 	CMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool color);
