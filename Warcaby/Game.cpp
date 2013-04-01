@@ -85,6 +85,12 @@ void CGame::mousePressed(sf::Event& event)
 				//if(!m_multiBeating)
 				{
 					m_selected->setPosition(newpos);
+
+					if(m_moveFor == EPieceColor::WHITE)
+						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, true);
+					else
+						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, false);
+
 					checkForKings();
 				}
 
@@ -263,6 +269,8 @@ void CGame::changeTurn()
 	}
 	//checkIfNoBeating();
 
+	mem.addSet(m_Pieces);
+
 	if(m_playerColor == EPieceColor::BLACK)
 		m_moveFor = EPieceColor::WHITE;
 	else
@@ -359,6 +367,8 @@ CGame::CGame(void)
 			}
 		}
 	}
+
+	mem.addSet(m_Pieces);
 
 	/*m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));
 	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(300, 100)));

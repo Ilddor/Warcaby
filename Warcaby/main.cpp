@@ -2,6 +2,7 @@
 #include <SFML\Graphics.hpp>
 
 #include "Game.h"
+#include "Set.h"
 
 int main()
 {
@@ -12,8 +13,6 @@ int main()
 	CGame GameObject;
 
 	GameObject.setPvP(true);
-
-	std::cout << sizeof(int*) << std::endl;
 
 	while(Window.isOpen())
 	{

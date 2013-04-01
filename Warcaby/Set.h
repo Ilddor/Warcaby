@@ -15,9 +15,13 @@ private:
 
 	CSet(void);
 public:
+	void setColorWinning(bool color);	//method can be only used on temporary(1 round) memory
+	//because used on full memory would break all data(bot would think that all moves of this color was winning moves
+	//if you use it on full memory I will find you and I will kill you
+	void addMove(char src, char dst, char info);
 	void addMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool color);
 
+	CSet(int part1, int part2, int part3);
 	CSet(const std::vector<CPiece*>& board);
 	~CSet(void);
 };
-

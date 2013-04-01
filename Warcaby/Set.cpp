@@ -1,8 +1,29 @@
 #include "Set.h"
 
+void CSet::setColorWinning(bool color)
+{
+	for(auto it = m_moves.begin(); it != m_moves.end(); ++it)
+	{
+		if(color == (*it)->getColor())
+			(*it)->setWinning();
+	}
+}
+
+void CSet::addMove(char src, char dst, char info)
+{
+	m_moves.push_back(new CMove(src, dst, info));
+}
+
 void CSet::addMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool color)
 {
 	m_moves.push_back(new CMove(srcx, srcy, dstx, dsty, winning, color));
+}
+
+CSet::CSet(int part1, int part2, int part3)
+{
+	m_part1 = part1;
+	m_part2 = part2;
+	m_part3 = part3;
 }
 
 CSet::CSet(const std::vector<CPiece*>& board)
@@ -39,4 +60,9 @@ CSet::CSet(void)
 
 CSet::~CSet(void)
 {
+	for(auto it = m_moves.begin(); it != m_moves.end(); ++it)
+	{
+		delete(*it);
+	}
+	m_moves.clear();
 }

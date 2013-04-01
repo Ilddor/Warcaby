@@ -88,6 +88,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BotMemory.h" />
+    <ClInclude Include="Dependencies\rapidxml.hpp" />
+    <ClInclude Include="Dependencies\rapidxml_iterators.hpp" />
+    <ClInclude Include="Dependencies\rapidxml_print.hpp" />
+    <ClInclude Include="Dependencies\rapidxml_utils.hpp" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Misc.h" />
     <ClInclude Include="Move.h" />
