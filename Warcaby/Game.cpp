@@ -81,7 +81,7 @@ void CGame::mousePressed(sf::Event& event)
 					}
 				}
 
-				if(abs(newpos.x - prevpos.x) >= 200 || !m_multiBeating)
+				if(abs(newpos.x - prevpos.x) >= 200 || (!m_multiBeating && (isBeatingPossible(m_selected) == (abs(newpos.x - prevpos.x) >= 200))))
 				//if(!m_multiBeating)
 				{
 					m_selected->setPosition(newpos);
@@ -93,17 +93,17 @@ void CGame::mousePressed(sf::Event& event)
 					mem.addSet(m_Pieces);
 
 					checkForKings();
-				}
 
-				if(isBeatingPossible(m_selected) && !normalMove)
-				{											//if beated something check if there is possibiliy to multibeat
-					m_multiBeating = true;
-					return;
-				}
-				else	//if not, change movefor
-				{
-					changeTurn();
-					m_multiBeating = false;
+					if(isBeatingPossible(m_selected) && !normalMove)
+					{											//if beated something check if there is possibiliy to multibeat
+						m_multiBeating = true;
+						return;
+					}
+					else	//if not, change movefor
+					{
+						changeTurn();
+						m_multiBeating = false;
+					}
 				}
 			}
 			else
