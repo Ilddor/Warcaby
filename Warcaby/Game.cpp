@@ -92,8 +92,6 @@ void CGame::mousePressed(sf::Event& event)
 						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, false);
 					mem.addSet(m_Pieces);
 
-					checkForKings();
-
 					if(isBeatingPossible(m_selected) && !normalMove)
 					{											//if beated something check if there is possibiliy to multibeat
 						m_multiBeating = true;
@@ -101,6 +99,7 @@ void CGame::mousePressed(sf::Event& event)
 					}
 					else	//if not, change movefor
 					{
+						checkForKings();
 						changeTurn();
 						m_multiBeating = false;
 					}
