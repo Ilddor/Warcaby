@@ -43,6 +43,17 @@ void CBotMemory::addSet(const std::vector<CPiece*>& board)
 	m_memory.push_back(new CSet(board));
 }
 
+void CBotMemory::setWinner(EPieceColor color)
+{
+	for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
+	{
+		if(color == EPieceColor::WHITE)
+			(*it)->setColorWinning(true);	//true == white
+		else
+			(*it)->setColorWinning(false);
+	}
+}
+
 void CBotMemory::saveToFile(std::string path)
 {
 	std::fstream file(path, std::ios::out);
@@ -106,6 +117,31 @@ void CBotMemory::loadFromFile(std::string path)
 
 			m_memory.back()->addMove(src, dst, info);
 		}
+	}
+}
+
+void CBotMemory::merge(CBotMemory& other)
+{
+	bool tmp;
+	for(auto it = other.m_memory.begin(); it != other.m_memory.end(); ++it)
+	{
+		tmp = false;
+		for(auto it2 = m_memory.begin(); it2 != m_memory.end(); ++it2)
+		{
+			if(((*it)->getPart1() == (*it2)->getPart1()) &&
+				((*it)->getPart2() == (*it2)->getPart2()) &&
+				((*it)->getPart3() == (*it2)->getPart3()))
+			{
+				(*it2)->MergeMoves(**it);
+				tmp = true;
+			}
+		}
+		if(!tmp)
+		{
+			m_memory.push_back(*it);
+		}
+		//if(it == other.m_memory.end())
+		//	break;
 	}
 }
 

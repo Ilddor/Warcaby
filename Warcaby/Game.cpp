@@ -260,7 +260,9 @@ void CGame::changeTurn()
 {
 	if(checkForWin())
 	{
-		mem.saveToFile("data.xml");
+		mem.setWinner(m_moveFor);
+		data.merge(mem);
+		data.saveToFile("data.xml");
 		std::cout << "Wygral kolor: ";
 		if(m_moveFor == EPieceColor::WHITE)
 			std::cout << "bialy" << std::endl;
@@ -383,7 +385,7 @@ CGame::~CGame(void)
 {
 	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 	{
-		delete(*it);
+		//delete(*it);
 	}
 	m_Pieces.clear();
 }

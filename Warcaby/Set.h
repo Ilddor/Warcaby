@@ -26,6 +26,8 @@ public:
 	void addMove(char src, char dst, char info);
 	void addMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool color);
 
+	void MergeMoves(CSet& other);
+
 	CSet(int part1, int part2, int part3);
 	CSet(const std::vector<CPiece*>& board);
 	~CSet(void);

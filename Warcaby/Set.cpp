@@ -39,6 +39,19 @@ void CSet::addMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool co
 	m_moves.push_back(new CMove(srcx, srcy, dstx, dsty, winning, color));
 }
 
+void CSet::MergeMoves(CSet& other)
+{
+	m_moves.merge(other.m_moves);
+	m_moves.unique([](CMove* a, CMove* b)->bool{
+		if((a->getSource() == b ->getSource()) &&
+			(a->getDestination() == b->getDestination()) &&
+			(a->getColor() == b->getColor()))					//check if move has the same parameters (winning doesnt matter)
+			return true;
+		else
+			return false;
+	});
+}
+
 CSet::CSet(int part1, int part2, int part3)
 {
 	m_part1 = part1;
