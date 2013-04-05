@@ -95,7 +95,7 @@ CSet::~CSet(void)
 {
 	for(auto it = m_moves.begin(); it != m_moves.end(); ++it)
 	{
-		delete(*it);
+		//delete(*it);
 	}
 	m_moves.clear();
 }

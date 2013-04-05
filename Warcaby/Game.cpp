@@ -34,6 +34,7 @@ void CGame::mousePressed(sf::Event& event)
 			{
 				sf::Vector2f newpos(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100);
 				sf::Vector2f prevpos(m_selected->getPosition());
+				bool shouldBeat = isBeatingPossible(m_selected);
 				bool normalMove = true;
 				if(abs(newpos.x - prevpos.x) >= 200)	//if the move was over 2 fields or more -> delete skipped piece
 				{
@@ -81,8 +82,7 @@ void CGame::mousePressed(sf::Event& event)
 					}
 				}
 
-				if(abs(newpos.x - prevpos.x) >= 200 || (!m_multiBeating && (isBeatingPossible(m_selected) == (abs(newpos.x - prevpos.x) >= 200))))
-				//if(!m_multiBeating)
+				if(shouldBeat == !normalMove)
 				{
 					m_selected->setPosition(newpos);
 
@@ -236,7 +236,7 @@ bool CGame::isBeatingPossible(CPiece* piece)
 					   ((*it)->getPosition() + dir).x > 700 ||
 					   ((*it)->getPosition() + dir).y < 0 ||
 					   ((*it)->getPosition() + dir).y > 700)
-						break;
+						continue;
 					if(isMovePossible((*it)->getPosition() + dir, piece))
 						return true;
 				}
@@ -385,7 +385,7 @@ CGame::~CGame(void)
 {
 	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 	{
-		//delete(*it);
+		delete(*it);
 	}
 	m_Pieces.clear();
 }
