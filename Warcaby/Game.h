@@ -37,6 +37,7 @@ public:
 	void checkForKings();
 	bool checkIfBeating();
 	bool checkForWin();
+	bool chackForDraw();
 
 	void drawPieces(sf::RenderWindow& window);
 	void drawBackground(sf::RenderTarget& window);

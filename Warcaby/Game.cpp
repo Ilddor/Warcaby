@@ -280,6 +280,11 @@ void CGame::changeTurn()
 	if(m_pvp)
 		m_playerColor = m_moveFor;
 
+	if(chackForDraw())
+	{
+		std::cout << "Remis :(" << std::endl;
+	}
+
 	std::cout << "Zmiana ruchu" << std::endl;
 }
 
@@ -317,6 +322,48 @@ bool CGame::checkForWin()
 	{
 		if((*it)->getColor() != m_moveFor)
 			return false;
+	}
+	return true;
+}
+
+bool CGame::chackForDraw()
+{
+	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+	{
+		if((*it)->getColor() == m_moveFor)
+		{
+			if(isBeatingPossible(*it))
+				return false;
+			int hasSpace = (*it)->isKing()? 4:2;
+			if((*it)->getPosition().x == 700)
+				hasSpace -= (*it)->isKing()? 2:1;
+			if((*it)->getPosition().x == 0)
+				hasSpace -= (*it)->isKing()? 2:1;
+			if((*it)->getPosition().y == 700)
+				hasSpace -= (*it)->isKing()? 2:0;
+			if((*it)->getPosition().y == 0)
+				hasSpace -= (*it)->isKing()? 2:0;
+
+			for(auto it2 = m_Pieces.begin(); it2 != m_Pieces.end(); ++it2)
+			{
+				if(((*it)->getColor() == EPieceColor::BLACK) || (*it)->isKing())
+				{
+					if((*it2)->getPosition() == (*it)->getPosition()+sf::Vector2f(100,100))
+						--hasSpace;
+					if((*it2)->getPosition() == (*it)->getPosition()+sf::Vector2f(-100,100))
+						--hasSpace;
+				}
+				if(((*it)->getColor() == EPieceColor::WHITE) || (*it)->isKing())
+				{
+					if((*it2)->getPosition() == (*it)->getPosition()+sf::Vector2f(-100,-100))
+						--hasSpace;
+					if((*it2)->getPosition() == (*it)->getPosition()+sf::Vector2f(100,-100))
+						--hasSpace;
+				}
+			}
+			if(hasSpace > 0)
+				return false;
+		}
 	}
 	return true;
 }
