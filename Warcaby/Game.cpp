@@ -280,7 +280,7 @@ void CGame::changeTurn()
 	if(m_pvp)
 		m_playerColor = m_moveFor;
 
-	if(chackForDraw())
+	if(checkForDraw())
 	{
 		std::cout << "Remis :(" << std::endl;
 	}
@@ -326,7 +326,7 @@ bool CGame::checkForWin()
 	return true;
 }
 
-bool CGame::chackForDraw()
+bool CGame::checkForDraw()
 {
 	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 	{
