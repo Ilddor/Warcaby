@@ -269,6 +269,26 @@ const std::vector<CPiece*>& CGame::getBoard()
 	return m_Pieces;
 }
 
+const sf::Vector2f& CGame::getLastMoveSrc()
+{
+	return m_lastMoveSrc;
+}
+
+const sf::Vector2f& CGame::getLastMoveDst()
+{
+	return m_lastMoveDst;
+}
+
+const std::string& CGame::getLastEvent()
+{
+	return m_lastEvent;
+}
+
+const EPieceColor& CGame::getMoveFor()
+{
+	return m_moveFor;
+}
+
 void CGame::changeTurn()
 {
 	if(checkForWin())

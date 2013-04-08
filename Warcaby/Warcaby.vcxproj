@@ -82,7 +82,6 @@
     <ClCompile Include="Bot.cpp" />
     <ClCompile Include="BotMemory.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Listener.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Piece.cpp" />

@@ -38,6 +38,10 @@ public:
 	void setPvP(bool mode);
 
 	const std::vector<CPiece*>& getBoard();
+	const sf::Vector2f& getLastMoveSrc();
+	const sf::Vector2f& getLastMoveDst();
+	const std::string& getLastEvent();
+	const EPieceColor& getMoveFor();
 
 	void changeTurn();
 	void checkForKings();
