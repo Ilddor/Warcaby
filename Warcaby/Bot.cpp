@@ -5,6 +5,7 @@
 
 void CBot::update(std::string eventName, EPieceColor color)
 {
+	//playerMove, draw, gameStart
 	if(eventName == "turn" && m_color == color)
 	{
 		  std::cout << "I think I should make a move now" << std::endl;

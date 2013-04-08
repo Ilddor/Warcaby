@@ -86,11 +86,16 @@ void CGame::mousePressed(sf::Event& event)
 				{
 					m_selected->setPosition(newpos);
 
-					if(m_moveFor == EPieceColor::WHITE)
+					m_lastMoveSrc = prevpos;
+					m_lastMoveDst = newpos;
+					if(!m_pvp)
+						m_bot->update("playerMove", m_playerColor);
+
+					/*if(m_moveFor == EPieceColor::WHITE)
 						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, true);
 					else
 						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, false);
-					mem.addSet(m_Pieces);
+					mem.addSet(m_Pieces);*/
 
 					if(isBeatingPossible(m_selected) && !normalMove)
 					{											//if beated something check if there is possibiliy to multibeat
@@ -260,14 +265,19 @@ void CGame::changeTurn()
 {
 	if(checkForWin())
 	{
-		mem.setWinner(m_moveFor);
+		/*mem.setWinner(m_moveFor);
 		data.merge(mem);
-		data.saveToFile("data.xml");
+		data.saveToFile("data.xml");*/
+
 		std::cout << "Wygral kolor: ";
 		if(m_moveFor == EPieceColor::WHITE)
 			std::cout << "bialy" << std::endl;
 		else
 			std::cout << "czarny" << std::endl;
+
+		if(!m_pvp)
+			m_bot->update("gameEnd", m_moveFor);
+
 		return;
 	}
 	//checkIfNoBeating();
@@ -279,10 +289,14 @@ void CGame::changeTurn()
 
 	if(m_pvp)
 		m_playerColor = m_moveFor;
+	else
+		m_bot->update("turn", m_moveFor);
 
 	if(checkForDraw())
 	{
 		std::cout << "Remis :(" << std::endl;
+		if(!m_pvp)
+			m_bot->update("draw", m_playerColor);
 	}
 
 	std::cout << "Zmiana ruchu" << std::endl;
@@ -416,8 +430,8 @@ CGame::CGame(void)
 		}
 	}
 
-	data.loadFromFile("data.xml");
-	mem.addSet(m_Pieces);
+	//data.loadFromFile("data.xml");
+	//mem.addSet(m_Pieces);
 
 	/*m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));
 	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(300, 100)));

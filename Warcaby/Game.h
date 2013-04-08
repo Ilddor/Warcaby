@@ -5,7 +5,7 @@
 
 #include "Piece.h"
 #include "Misc.h"
-#include "BotMemory.h"
+#include "Bot.h"
 
 class CGame
 {
@@ -23,7 +23,10 @@ private:
 	CPiece* m_selected;
 	bool m_multiBeating;
 
-	CBotMemory mem, data;
+	sf::Vector2f m_lastMoveSrc;
+	sf::Vector2f m_lastMoveDst;
+
+	CBot* m_bot;
 public:
 	void mousePressed(sf::Event& event);
 
