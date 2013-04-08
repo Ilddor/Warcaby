@@ -17,13 +17,15 @@ private:
 
 	CBotMemory m_mainMemory;
 	CBotMemory m_tmpMemory;
+
+	sf::Vector2f findBeatingMove(CPiece* piece);
 public:
 	void update();
 
 	void addGamePtr(CGame* ptr);
 
 	void setColor(EPieceColor color);
-	void makeMove(CMove move);
+	bool makeMove(CMove move);
 
 	CBot(void);
 	~CBot(void);

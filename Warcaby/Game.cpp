@@ -31,7 +31,10 @@ void CGame::mousePressed(sf::Event& event)
 		if(m_backgroud.getPixel(event.mouseButton.x, event.mouseButton.y) == sf::Color(40, 40, 40))
 		{
 			if(moveSelectedPiece(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100))
+			{
+				clearSelect();
 				changeTurn();
+			}
 			/*if(isMovePossible(sf::Vector2f(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100), m_selected))	//check if requested move is possible
 			{
 				sf::Vector2f newpos(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100);
@@ -429,6 +432,8 @@ bool CGame::selectPiece(int x, int y)
 
 void CGame::clearSelect()
 {
+	if(m_selected != nullptr)
+		m_selected->setSelected(false);
 	m_selected = nullptr;
 }
 

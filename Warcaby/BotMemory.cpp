@@ -68,9 +68,10 @@ CMove* CBotMemory::findSet(const std::vector<CPiece*>& board)
 				if((*it2)->getWinning())
 					return *it2;
 			}
-			return nullptr;
+			return *(*it)->getMoves().begin();
 		}
 	}
+	return nullptr;
 }
 
 void CBotMemory::saveToFile(std::string path)
