@@ -1,13 +1,15 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include <SFML/Graphics.hpp>
 
 #include "Piece.h"
 #include "Misc.h"
-#include "Bot.h"
+#include "Subject.h"
 
-class CGame
+class CGame:
+	public Subject
 {
 private:
 	sf::Image m_backgroud;
@@ -25,8 +27,7 @@ private:
 
 	sf::Vector2f m_lastMoveSrc;
 	sf::Vector2f m_lastMoveDst;
-
-	CBot* m_bot;
+	std::string m_lastEvent;
 public:
 	void mousePressed(sf::Event& event);
 
@@ -35,6 +36,8 @@ public:
 
 	void setPlayerColor(EPieceColor color);
 	void setPvP(bool mode);
+
+	const std::vector<CPiece*>& getBoard();
 
 	void changeTurn();
 	void checkForKings();

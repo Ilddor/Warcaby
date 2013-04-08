@@ -89,7 +89,10 @@ void CGame::mousePressed(sf::Event& event)
 					m_lastMoveSrc = prevpos;
 					m_lastMoveDst = newpos;
 					if(!m_pvp)
-						m_bot->update("playerMove", m_playerColor);
+					{
+						m_lastEvent = "playerMove";
+						broadcast();
+					}
 
 					/*if(m_moveFor == EPieceColor::WHITE)
 						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, true);
@@ -261,6 +264,11 @@ void CGame::setPvP(bool mode)
 	m_pvp = mode;
 }
 
+const std::vector<CPiece*>& CGame::getBoard()
+{
+	return m_Pieces;
+}
+
 void CGame::changeTurn()
 {
 	if(checkForWin())
@@ -276,7 +284,10 @@ void CGame::changeTurn()
 			std::cout << "czarny" << std::endl;
 
 		if(!m_pvp)
-			m_bot->update("gameEnd", m_moveFor);
+		{
+			m_lastEvent = "gameEnd";
+			broadcast();
+		}
 
 		return;
 	}
@@ -290,13 +301,19 @@ void CGame::changeTurn()
 	if(m_pvp)
 		m_playerColor = m_moveFor;
 	else
-		m_bot->update("turn", m_moveFor);
+	{
+		m_lastEvent = "turn";
+		broadcast();
+	}
 
 	if(checkForDraw())
 	{
 		std::cout << "Remis :(" << std::endl;
 		if(!m_pvp)
-			m_bot->update("draw", m_playerColor);
+		{
+			m_lastEvent = "draw";
+			broadcast();
+		}
 	}
 
 	std::cout << "Zmiana ruchu" << std::endl;
@@ -432,6 +449,8 @@ CGame::CGame(void)
 
 	//data.loadFromFile("data.xml");
 	//mem.addSet(m_Pieces);
+	m_lastEvent = "gameStart";
+	broadcast();
 
 	/*m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));
 	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(300, 100)));

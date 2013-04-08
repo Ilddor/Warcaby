@@ -3,15 +3,14 @@
 #include <iostream>
 #include "Misc.h"
 
-void CBot::update(std::string eventName, EPieceColor color)
+void CBot::update()
 {
-	//playerMove, draw, gameStart
 	if(eventName == "turn" && m_color == color)
 	{
 		  std::cout << "I think I should make a move now" << std::endl;
 		  //Here we proceed with magic such as getting board, thinking of best move and killing the other motherfucker
 	}
-	else if(eventName == "gameEnd")
+	if(eventName == "gameEnd")
 	{
 		  if(m_color == color)
 		  {
@@ -23,6 +22,16 @@ void CBot::update(std::string eventName, EPieceColor color)
 		  	  std::cout << "Well shit :(" << std::endl;
 			  //Here we will cry like a little girl and get suicidal thoughts ;-)
 		  }
+	}
+	if(eventName == "playerMove")
+	{
+	}
+	if(eventName == "draw")
+	{
+	}
+	if(eventName == "gameStart" && color != m_color)
+	{
+		m_tmpMemory.addSet();
 	}
 }
 
