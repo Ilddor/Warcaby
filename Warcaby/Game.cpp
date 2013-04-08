@@ -30,7 +30,9 @@ void CGame::mousePressed(sf::Event& event)
 	{
 		if(m_backgroud.getPixel(event.mouseButton.x, event.mouseButton.y) == sf::Color(40, 40, 40))
 		{
-			if(isMovePossible(sf::Vector2f(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100), m_selected))	//check if requested move is possible
+			if(moveSelectedPiece(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100))
+				changeTurn();
+			/*if(isMovePossible(sf::Vector2f(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100), m_selected))	//check if requested move is possible
 			{
 				sf::Vector2f newpos(event.mouseButton.x-event.mouseButton.x%100, event.mouseButton.y-event.mouseButton.y%100);
 				sf::Vector2f prevpos(m_selected->getPosition());
@@ -94,12 +96,6 @@ void CGame::mousePressed(sf::Event& event)
 						broadcast();
 					}
 
-					/*if(m_moveFor == EPieceColor::WHITE)
-						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, true);
-					else
-						mem.addMoveToLastSet(prevpos.x, prevpos.y, newpos.x, newpos.y, false, false);
-					mem.addSet(m_Pieces);*/
-
 					if(isBeatingPossible(m_selected) && !normalMove)
 					{											//if beated something check if there is possibiliy to multibeat
 						m_multiBeating = true;
@@ -108,22 +104,15 @@ void CGame::mousePressed(sf::Event& event)
 					else	//if not, change movefor
 					{
 						checkForKings();
+						m_selected->setSelected(false);
 						changeTurn();
 						m_multiBeating = false;
 					}
 				}
-			}
-			else
-			{
-				/*if(m_multiBeating)
-				{
-					changeTurn();
-					m_multiBeating = false;
-				}*/
-			}
+			}*/
 		}
 
-		if(!m_multiBeating)
+		if(!m_multiBeating && m_pvp)
 		{
 			m_selected->setSelected(false);
 			m_selected = nullptr;
@@ -313,18 +302,10 @@ void CGame::changeTurn()
 	}
 	//checkIfNoBeating();
 
-	if(m_playerColor == EPieceColor::BLACK)
+	if(m_moveFor == EPieceColor::BLACK)
 		m_moveFor = EPieceColor::WHITE;
 	else
 		m_moveFor = EPieceColor::BLACK;
-
-	if(m_pvp)
-		m_playerColor = m_moveFor;
-	else
-	{
-		m_lastEvent = "turn";
-		broadcast();
-	}
 
 	if(checkForDraw())
 	{
@@ -336,7 +317,18 @@ void CGame::changeTurn()
 		}
 	}
 
-	std::cout << "Zmiana ruchu" << std::endl;
+	std::cout << "Zmiana ruchu: " << m_moveFor << std::endl;
+
+	if(m_pvp)
+		m_playerColor = m_moveFor;
+	else
+	{
+		if(m_moveFor != m_playerColor)
+		{
+			m_lastEvent = "turn";
+			broadcast();
+		}
+	}
 }
 
 void CGame::checkForKings()
@@ -419,6 +411,111 @@ bool CGame::checkForDraw()
 	return true;
 }
 
+bool CGame::selectPiece(int x, int y)
+{
+	sf::Vector2f pos(x,y);
+
+	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+	{
+		if((*it)->getPosition() == pos)
+		{
+			m_selected = (*it);
+			m_selected->setSelected(true);
+			return true;
+		}
+	}
+	return false;
+}
+
+void CGame::clearSelect()
+{
+	m_selected = nullptr;
+}
+
+bool CGame::moveSelectedPiece(int x, int y)
+{
+	sf::Vector2f pos(x,y);
+	if(isMovePossible(pos, m_selected))	//check if requested move is possible
+	{
+		sf::Vector2f newpos(pos);
+		sf::Vector2f prevpos(m_selected->getPosition());
+		bool shouldBeat = isBeatingPossible(m_selected);
+		bool normalMove = true;
+		if(abs(newpos.x - prevpos.x) >= 200)	//if the move was over 2 fields or more -> delete skipped piece
+		{
+			if(!m_selected->isKing())
+			{
+				sf::Vector2f erasePos;			//vector to subtract from new pos(for kings compatibility)
+				if(newpos.x - prevpos.x > 0)
+					erasePos.x = 100;
+				else
+					erasePos.x = -100;
+
+				if(newpos.y - prevpos.y > 0)
+					erasePos.y = 100;
+				else
+					erasePos.y = -100;
+
+				for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+				{
+					if((*it)->getPosition() == newpos-erasePos)
+					{
+						m_Pieces.erase(it);
+						normalMove = false;
+						break;
+					}
+				}
+			}
+			else
+			{
+				sf::Vector2f gap((newpos - prevpos).x/(abs((newpos - prevpos).x)/100), (newpos - prevpos).y/(abs((newpos - prevpos).y)/100));
+				sf::Vector2f erasePos = prevpos + gap;
+
+				while(erasePos != newpos)
+				{
+					for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+					{
+						if((*it)->getPosition() == erasePos)
+						{
+							m_Pieces.erase(it);
+							normalMove = false;
+							break;
+						}
+					}
+					erasePos += gap;
+				}
+			}
+		}
+
+		if(shouldBeat == !normalMove)
+		{
+			m_selected->setPosition(newpos);
+
+			m_lastMoveSrc = prevpos;
+			m_lastMoveDst = newpos;
+			if(!m_pvp)
+			{
+				m_lastEvent = "playerMove";
+				broadcast();
+			}
+
+			if(isBeatingPossible(m_selected) && !normalMove)
+			{											//if beated something check if there is possibiliy to multibeat
+				m_multiBeating = true;
+				return false;
+			}
+			else	//if not, change movefor
+			{
+				checkForKings();
+				m_selected->setSelected(false);
+				m_multiBeating = false;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void CGame::drawPieces(sf::RenderWindow& window)
 {
 	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
@@ -430,6 +527,13 @@ void CGame::drawPieces(sf::RenderWindow& window)
 void CGame::drawBackground(sf::RenderTarget& window)
 {
 	window.draw(m_drawableBackground);
+}
+
+void CGame::start()
+{
+	std::cout << "Game started" << std::endl;
+	m_lastEvent = "gameStart";
+	broadcast();
 }
 
 CGame::CGame(void)
@@ -466,11 +570,6 @@ CGame::CGame(void)
 			}
 		}
 	}
-
-	//data.loadFromFile("data.xml");
-	//mem.addSet(m_Pieces);
-	m_lastEvent = "gameStart";
-	broadcast();
 
 	/*m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(100, 300)));
 	m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(300, 100)));

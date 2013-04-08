@@ -3,5 +3,5 @@
 class Listener
 {
 public:
-	virtual void update();
+	virtual void update() {};
 };

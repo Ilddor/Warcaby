@@ -54,6 +54,25 @@ void CBotMemory::setWinner(EPieceColor color)
 	}
 }
 
+CMove* CBotMemory::findSet(const std::vector<CPiece*>& board)
+{
+	CSet set(board);
+	for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
+	{
+		if((*it)->getPart1() == set.getPart1() &&
+			(*it)->getPart2() == set.getPart2() &&
+			(*it)->getPart3() == set.getPart3())
+		{
+			for(auto it2 = (*it)->getMoves().begin(); it2 != (*it)->getMoves().end(); ++it2)
+			{
+				if((*it2)->getWinning())
+					return *it2;
+			}
+			return nullptr;
+		}
+	}
+}
+
 void CBotMemory::saveToFile(std::string path)
 {
 	std::fstream file(path, std::ios::out);

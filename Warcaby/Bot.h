@@ -22,6 +22,9 @@ public:
 
 	void addGamePtr(CGame* ptr);
 
+	void setColor(EPieceColor color);
+	void makeMove(CMove move);
+
 	CBot(void);
 	~CBot(void);
 };

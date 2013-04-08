@@ -14,6 +14,8 @@ public:
 
 	void setWinner(EPieceColor color);	//use it on main memory and I will cut off your balls
 
+	CMove* findSet(const std::vector<CPiece*>& board);
+
 	void saveToFile(std::string path);
 	void loadFromFile(std::string path);
 

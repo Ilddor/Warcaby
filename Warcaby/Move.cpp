@@ -13,6 +13,14 @@ bool CMove::getColor()
 		return false;
 }
 
+bool CMove::getWinning()
+{
+	if(m_info & 1<<0)
+		return true;
+	else
+		return false;
+}
+
 char CMove::getSource()
 {
 	return m_source;
@@ -38,10 +46,10 @@ CMove::CMove(char src, char dst, char info)
 CMove::CMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool color)
 {
 	m_source = m_destination = m_info = 0;
-	m_source |= srcx;
-	m_source |= srcy<<4;
-	m_destination |= dstx;
-	m_destination |= dsty<<4;
+	m_source |= (srcx & 0xf);
+	m_source |= (srcx & 0xf)<<4;
+	m_destination |= (dstx & 0xf);
+	m_destination |= (dstx & 0xf)<<4;
 	if(winning)
 		m_info |= 1<<0;
 	if(color)

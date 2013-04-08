@@ -10,6 +10,7 @@ public:
 	void setWinning();
 
 	bool getColor();	//true for white, false for black
+	bool getWinning();
 	char getSource();
 	char getDestination();
 	char getInfo();

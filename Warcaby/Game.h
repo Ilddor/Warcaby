@@ -49,8 +49,14 @@ public:
 	bool checkForWin();
 	bool checkForDraw();
 
+	bool selectPiece(int x, int y);
+	void clearSelect();
+	bool moveSelectedPiece(int x, int y);
+
 	void drawPieces(sf::RenderWindow& window);
 	void drawBackground(sf::RenderTarget& window);
+
+	void start();
 
 	CGame(void);
 	~CGame(void);

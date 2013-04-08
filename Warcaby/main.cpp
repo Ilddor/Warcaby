@@ -2,6 +2,7 @@
 #include <SFML\Graphics.hpp>
 
 #include "Game.h"
+#include "Bot.h"
 #include "Set.h"
 
 int main()
@@ -11,8 +12,16 @@ int main()
 	sf::Event Event;
 
 	CGame GameObject;
+	CBot BotObject;
 
-	GameObject.setPvP(true);
+	GameObject.addListener(&BotObject);
+	BotObject.addGamePtr(&GameObject);
+
+	GameObject.setPlayerColor(EPieceColor::WHITE);
+	BotObject.setColor(EPieceColor::BLACK);
+
+	GameObject.setPvP(false);
+	GameObject.start();
 
 	while(Window.isOpen())
 	{
