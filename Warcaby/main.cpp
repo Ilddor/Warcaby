@@ -17,8 +17,8 @@ int main()
 	GameObject.addListener(&BotObject);
 	BotObject.addGamePtr(&GameObject);
 
-	GameObject.setPlayerColor(EPieceColor::WHITE);
-	BotObject.setColor(EPieceColor::BLACK);
+	GameObject.setPlayerColor(EPieceColor::BLACK);
+	BotObject.setColor(EPieceColor::WHITE);
 
 	GameObject.setPvP(false);
 	GameObject.start();

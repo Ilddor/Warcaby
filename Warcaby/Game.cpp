@@ -115,10 +115,9 @@ void CGame::mousePressed(sf::Event& event)
 			}*/
 		}
 
-		if(!m_multiBeating && m_pvp)
+		if(!m_multiBeating)
 		{
-			m_selected->setSelected(false);
-			m_selected = nullptr;
+			clearSelect();
 		}
 	}
 }
@@ -539,6 +538,12 @@ void CGame::start()
 	std::cout << "Game started" << std::endl;
 	m_lastEvent = "gameStart";
 	broadcast();
+
+	if(m_moveFor != m_playerColor)
+	{
+		m_lastEvent = "turn";
+		broadcast();
+	}
 }
 
 CGame::CGame(void)

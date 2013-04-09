@@ -174,7 +174,7 @@ void CBot::update()
 	{
 		m_mainMemory.merge(m_tmpMemory);
 	}
-	if(eventName == "gameStart" && color != m_color)
+	if(eventName == "gameStart")
 	{
 		m_tmpMemory.addSet(m_gamePtr->getBoard());
 	}
@@ -198,12 +198,14 @@ bool CBot::makeMove(CMove move)
 	int dstx = (move.getDestination() & 0x0f);
 	int dsty = (move.getDestination() & 0xf0)>>4;
 
-	m_gamePtr->selectPiece(srcx*100, srcy*100);
-	if(m_gamePtr->moveSelectedPiece(dstx*100, dsty*100))
+	if(m_gamePtr->selectPiece(srcx*100, srcy*100))
 	{
-		m_gamePtr->changeTurn();
-		m_gamePtr->clearSelect();
-		return true;
+		if(m_gamePtr->moveSelectedPiece(dstx*100, dsty*100))
+		{
+			m_gamePtr->changeTurn();
+			m_gamePtr->clearSelect();
+			return true;
+		}
 	}
 	return false;
 }
