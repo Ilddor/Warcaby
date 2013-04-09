@@ -47,9 +47,9 @@ CMove::CMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool color)
 {
 	m_source = m_destination = m_info = 0;
 	m_source |= (srcx & 0xf);
-	m_source |= (srcx & 0xf)<<4;
+	m_source |= (srcy & 0xf)<<4;
 	m_destination |= (dstx & 0xf);
-	m_destination |= (dstx & 0xf)<<4;
+	m_destination |= (dsty & 0xf)<<4;
 	if(winning)
 		m_info |= 1<<0;
 	if(color)

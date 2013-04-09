@@ -35,12 +35,12 @@ char* TextFileRead(const char* fn)
 
 void CBotMemory::addMoveToLastSet(int srcx, int srcy, int dstx, int dsty, bool winning, bool color)
 {
-	m_memory.back()->addMove(srcx, srcy, dstx, dsty, winning, color);
+	m_memory.back().addMove(srcx, srcy, dstx, dsty, winning, color);
 }
 
 void CBotMemory::addSet(const std::vector<CPiece*>& board)
 {
-	m_memory.push_back(new CSet(board));
+	m_memory.push_back(CSet(board));
 }
 
 void CBotMemory::setWinner(EPieceColor color)
@@ -48,9 +48,9 @@ void CBotMemory::setWinner(EPieceColor color)
 	for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
 	{
 		if(color == EPieceColor::WHITE)
-			(*it)->setColorWinning(true);	//true == white
+			(*it).setColorWinning(true);	//true == white
 		else
-			(*it)->setColorWinning(false);
+			(*it).setColorWinning(false);
 	}
 }
 
@@ -59,16 +59,16 @@ CMove* CBotMemory::findSet(const std::vector<CPiece*>& board)
 	CSet set(board);
 	for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
 	{
-		if((*it)->getPart1() == set.getPart1() &&
-			(*it)->getPart2() == set.getPart2() &&
-			(*it)->getPart3() == set.getPart3())
+		if((*it).getPart1() == set.getPart1() &&
+			(*it).getPart2() == set.getPart2() &&
+			(*it).getPart3() == set.getPart3())
 		{
-			for(auto it2 = (*it)->getMoves().begin(); it2 != (*it)->getMoves().end(); ++it2)
+			for(auto it2 = (*it).getMoves().begin(); it2 != (*it).getMoves().end(); ++it2)
 			{
 				if((*it2)->getWinning())
 					return *it2;
 			}
-			return *(*it)->getMoves().begin();
+			return *(*it).getMoves().begin();
 		}
 	}
 	return nullptr;
@@ -83,15 +83,15 @@ void CBotMemory::saveToFile(std::string path)
 	for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
 	{
 		file << "	<set ";
-		file << "part1=\"" << (*it)->getPart1() << "\" ";
-		file << "part2=\"" << (*it)->getPart2() << "\" ";
-		file << "part3=\"" << (*it)->getPart3() << "\"";
-		if(!(*it)->getMoves().empty())
+		file << "part1=\"" << (*it).getPart1() << "\" ";
+		file << "part2=\"" << (*it).getPart2() << "\" ";
+		file << "part3=\"" << (*it).getPart3() << "\"";
+		if(!(*it).getMoves().empty())
 			file << ">" << std::endl;
 		else
 			file << "/>" << std::endl;
 
-		for(auto it2 = (*it)->getMoves().begin(); it2 != (*it)->getMoves().end(); ++it2)
+		for(auto it2 = (*it).getMoves().begin(); it2 != (*it).getMoves().end(); ++it2)
 		{
 			file << "		<move ";
 			file << "src=\"" << (int)(*it2)->getSource() << "\" ";
@@ -100,7 +100,7 @@ void CBotMemory::saveToFile(std::string path)
 			file << "/>" << std::endl;
 		}
 
-		if(!(*it)->getMoves().empty())
+		if(!(*it).getMoves().empty())
 			file << "	</set>" << std::endl;
 	}
 
@@ -127,7 +127,7 @@ void CBotMemory::loadFromFile(std::string path)
 		p2 = std::strtol(set->first_attribute("part2")->value(), 0, 10);
 		p3 = std::strtol(set->first_attribute("part3")->value(), 0, 10);
 
-		m_memory.push_back(new CSet(p1, p2, p3));
+		m_memory.push_back(CSet(p1, p2, p3));
 		
 		for(auto move = set->first_node("move"); move != 0; move = move->next_sibling())
 		{
@@ -135,7 +135,7 @@ void CBotMemory::loadFromFile(std::string path)
 			dst = (char)atoi(move->first_attribute("dst")->value());
 			info = (char)atoi(move->first_attribute("info")->value());
 
-			m_memory.back()->addMove(src, dst, info);
+			m_memory.back().addMove(src, dst, info);
 		}
 	}
 }
@@ -148,11 +148,11 @@ void CBotMemory::merge(CBotMemory& other)
 		tmp = false;
 		for(auto it2 = m_memory.begin(); it2 != m_memory.end(); ++it2)
 		{
-			if(((*it)->getPart1() == (*it2)->getPart1()) &&
-				((*it)->getPart2() == (*it2)->getPart2()) &&
-				((*it)->getPart3() == (*it2)->getPart3()))
+			if(((*it).getPart1() == (*it2).getPart1()) &&
+				((*it).getPart2() == (*it2).getPart2()) &&
+				((*it).getPart3() == (*it2).getPart3()))
 			{
-				(*it2)->MergeMoves(**it);
+				(*it2).MergeMoves(*it);
 				tmp = true;
 			}
 		}
@@ -172,9 +172,9 @@ CBotMemory::CBotMemory(void)
 
 CBotMemory::~CBotMemory(void)
 {
-	for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
+	/*for(auto it = m_memory.begin(); it != m_memory.end(); ++it)
 	{
 		delete(*it);
-	}
+	}*/
 	m_memory.clear();
 }

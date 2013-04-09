@@ -7,7 +7,7 @@
 class CBotMemory
 {
 private:
-	std::list<CSet*> m_memory;
+	std::list<CSet> m_memory;
 public:
 	void addMoveToLastSet(int srcx, int srcy, int dstx, int dsty, bool winning, bool color);
 	void addSet(const std::vector<CPiece*>& board);

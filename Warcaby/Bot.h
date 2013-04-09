@@ -19,6 +19,7 @@ private:
 	CBotMemory m_tmpMemory;
 
 	sf::Vector2f findBeatingMove(CPiece* piece);
+	CMove* findNonBeatingMove();
 public:
 	void update();
 

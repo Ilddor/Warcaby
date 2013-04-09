@@ -45,6 +45,49 @@ sf::Vector2f CBot::findBeatingMove(CPiece* piece)
 	//}
 }
 
+CMove* CBot::findNonBeatingMove()
+{
+	for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
+	{
+		if(m_color == (*it)->getColor())
+		{
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(100,100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(100,100));
+				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(-100,100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(-100,100));
+				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(-100,-100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(-100,-100));
+				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(100,-100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(100,-100));
+				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+		}
+	}
+	return nullptr;
+}
+
 void CBot::update()
 {
 	std::string eventName = m_gamePtr->getLastEvent();
@@ -55,12 +98,9 @@ void CBot::update()
 	{
 		std::cout << "I think I should make a move now" << std::endl;
 		
-		CMove* move;// = m_mainMemory.findSet(m_gamePtr->getBoard());
+		CMove* move = nullptr;// = m_mainMemory.findSet(m_gamePtr->getBoard());
 		/*if(move == nullptr)
-		{
 			std::cout << "Oops! I don't know what to do:(" << std::endl;
-
-		}
 		else
 			std::cout << "Yeah! I know what to do!" << std::endl;
 
@@ -73,6 +113,11 @@ void CBot::update()
 
 		do
 		{
+			if(move != nullptr)
+			{
+				delete move;
+				move = nullptr;
+			}
 			move = m_mainMemory.findSet(m_gamePtr->getBoard());
 			if(move == nullptr)
 			{
@@ -87,6 +132,10 @@ void CBot::update()
 							break;
 						}
 					}
+				}
+				else
+				{
+					move = findNonBeatingMove();
 				}
 			}
 		}

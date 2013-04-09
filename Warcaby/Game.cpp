@@ -350,7 +350,7 @@ bool CGame::checkIfBeating()
 {
 	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 	{
-		if((*it)->getColor() == m_moveFor && (*it) != m_selected)
+		if((*it)->getColor() == m_moveFor)
 		{
 			if(isBeatingPossible(*it))
 			{
