@@ -19,7 +19,8 @@ private:
 	CBotMemory m_tmpMemory;
 
 	sf::Vector2f findBeatingMove(CPiece* piece);
-	CMove* findNonBeatingMove();
+	CMove* findNonBeatingMove(bool lookForSafety);
+	bool isPositionDangerous(sf::Vector2f pos, sf::Vector2f src);
 public:
 	void update();
 

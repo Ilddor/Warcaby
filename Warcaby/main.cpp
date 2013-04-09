@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include <SFML\Graphics.hpp>
 
 #include "Game.h"
@@ -12,13 +13,36 @@ int main()
 	sf::Event Event;
 
 	CGame GameObject;
+
+	GameObject.setWindow(&Window);
+
 	CBot BotObject;
 
 	GameObject.addListener(&BotObject);
 	BotObject.addGamePtr(&GameObject);
 
+	CBot BotObject2;
+
+	GameObject.addListener(&BotObject2);
+	BotObject2.addGamePtr(&GameObject);
+
+	GameObject.setSelfgame(true);
 	GameObject.setPlayerColor(EPieceColor::BLACK);
-	BotObject.setColor(EPieceColor::WHITE);
+	BotObject.setColor(EPieceColor::BLACK);
+	BotObject2.setColor(EPieceColor::WHITE);
+
+	srand(time(NULL));
+	/*if(rand()%2 == 0)
+	{
+		GameObject.setPlayerColor(EPieceColor::BLACK);
+		BotObject.setColor(EPieceColor::WHITE);
+	}
+	else
+	{
+		GameObject.setPlayerColor(EPieceColor::WHITE);
+		BotObject.setColor(EPieceColor::BLACK);
+	}*/
+
 
 	GameObject.setPvP(false);
 	GameObject.start();

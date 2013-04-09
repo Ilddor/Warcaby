@@ -41,7 +41,8 @@ void CSet::addMove(int srcx, int srcy, int dstx, int dsty, bool winning, bool co
 
 void CSet::MergeMoves(CSet& other)
 {
-	m_moves.merge(other.m_moves);
+	//m_moves.merge(other.m_moves);
+	m_moves.insert(m_moves.end(), other.getMoves().begin(), other.getMoves().end());
 	m_moves.unique([](CMove* a, CMove* b)->bool{
 		if((a->getSource() == b ->getSource()) &&
 			(a->getDestination() == b->getDestination()) &&

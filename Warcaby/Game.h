@@ -21,6 +21,7 @@ private:
 	EPieceColor m_moveFor;
 	EPieceColor m_playerColor;
 	bool m_pvp;
+	bool m_selfgame;
 	
 	CPiece* m_selected;
 	bool m_multiBeating;
@@ -28,6 +29,8 @@ private:
 	sf::Vector2f m_lastMoveSrc;
 	sf::Vector2f m_lastMoveDst;
 	std::string m_lastEvent;
+
+	sf::RenderWindow* m_windowPtr;
 public:
 	void mousePressed(sf::Event& event);
 
@@ -36,12 +39,15 @@ public:
 
 	void setPlayerColor(EPieceColor color);
 	void setPvP(bool mode);
+	void setSelfgame(bool mode);
+	void setWindow(sf::RenderWindow* window);
 
 	const std::vector<CPiece*>& getBoard();
 	const sf::Vector2f& getLastMoveSrc();
 	const sf::Vector2f& getLastMoveDst();
 	const std::string& getLastEvent();
 	const EPieceColor& getMoveFor();
+	sf::RenderWindow& getWindow();
 
 	void changeTurn();
 	void checkForKings();

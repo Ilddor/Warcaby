@@ -45,7 +45,7 @@ sf::Vector2f CBot::findBeatingMove(CPiece* piece)
 	//}
 }
 
-CMove* CBot::findNonBeatingMove()
+CMove* CBot::findNonBeatingMove(bool lookForSafety)
 {
 	for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
 	{
@@ -88,8 +88,80 @@ CMove* CBot::findNonBeatingMove()
 	return nullptr;
 }
 
+bool CBot::isPositionDangerous(sf::Vector2f pos, sf::Vector2f src)
+{
+	sf::Vector2f dir(100,100);
+	if((pos+dir).x > 0 && (pos+dir).x < 800 && (pos+dir).y > 0 && (pos+dir).y < 800 &&
+		(pos-dir).x > 0 && (pos-dir).x < 800 && (pos-dir).y > 0 && (pos-dir).y < 800)
+	{
+		bool minus = false, plus = false;
+		bool color = false;
+		for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
+		{
+			if((*it)->getPosition() != src)
+			{
+				if((*it)->getPosition() == pos - dir)
+					minus = true;
+				if((*it)->getColor() != m_color)
+					color = true;
+			}
+		}
+		for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
+		{
+			if((*it)->getPosition() != pos)
+			{
+				if((*it)->getPosition() == pos - dir)
+					plus = true;
+				if((*it)->getColor() != m_color)
+					color = true;
+			}
+		}
+		if(minus != plus && color)
+			return true;
+	}
+	else
+		return false;
+
+	dir = sf::Vector2f(-100,100);
+	if((pos+dir).x > 0 && (pos+dir).x < 800 && (pos+dir).y > 0 && (pos+dir).y < 800 &&
+		(pos-dir).x > 0 && (pos-dir).x < 800 && (pos-dir).y > 0 && (pos-dir).y < 800)
+	{
+		bool minus = false, plus = false;
+		bool color = false;
+		for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
+		{
+			if((*it)->getPosition() != pos)
+			{
+				if((*it)->getPosition() == pos - dir)
+					minus = true;
+				if((*it)->getColor() != m_color)
+					color = true;
+			}
+		}
+		for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
+		{
+			if((*it)->getPosition() != pos)
+			{
+				if((*it)->getPosition() == pos - dir)
+					plus = true;
+				if((*it)->getColor() != m_color)
+					color = true;
+			}
+		}
+		if(minus != plus && color)
+			return true;
+	}
+	else
+		return false;
+}
+
 void CBot::update()
 {
+	m_gamePtr->getWindow().clear();
+	m_gamePtr->drawBackground(m_gamePtr->getWindow());
+	m_gamePtr->drawPieces(m_gamePtr->getWindow());
+	m_gamePtr->getWindow().display();
+
 	std::string eventName = m_gamePtr->getLastEvent();
 	EPieceColor color = m_gamePtr->getMoveFor();
 
@@ -121,6 +193,7 @@ void CBot::update()
 			move = m_mainMemory.findSet(m_gamePtr->getBoard());
 			if(move == nullptr)
 			{
+				std::cout << "Oops! I don't know what to do:( YOLO!" << std::endl;
 				if(m_gamePtr->checkIfBeating())
 				{
 					for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
@@ -135,9 +208,13 @@ void CBot::update()
 				}
 				else
 				{
-					move = findNonBeatingMove();
+					move = findNonBeatingMove(true);
+					if(move == nullptr)
+						move = findNonBeatingMove(false);
 				}
 			}
+			else
+				std::cout << "Yeah! I know what to do!" << std::endl;
 		}
 		while(!makeMove(*move));
 	}

@@ -255,6 +255,16 @@ void CGame::setPvP(bool mode)
 	m_pvp = mode;
 }
 
+void CGame::setSelfgame(bool mode)
+{
+	m_selfgame = mode;
+}
+
+void CGame::setWindow(sf::RenderWindow* window)
+{
+	m_windowPtr = window;
+}
+
 const std::vector<CPiece*>& CGame::getBoard()
 {
 	return m_Pieces;
@@ -278,6 +288,11 @@ const std::string& CGame::getLastEvent()
 const EPieceColor& CGame::getMoveFor()
 {
 	return m_moveFor;
+}
+
+sf::RenderWindow& CGame::getWindow()
+{
+	return *m_windowPtr;
 }
 
 void CGame::changeTurn()
@@ -325,7 +340,7 @@ void CGame::changeTurn()
 		m_playerColor = m_moveFor;
 	else
 	{
-		if(m_moveFor != m_playerColor)
+		if(m_moveFor != m_playerColor || m_selfgame)
 		{
 			m_lastEvent = "turn";
 			broadcast();

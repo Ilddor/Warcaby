@@ -68,7 +68,7 @@ CMove* CBotMemory::findSet(const std::vector<CPiece*>& board)
 				if((*it2)->getWinning())
 					return *it2;
 			}
-			return *(*it).getMoves().begin();
+			//return *(*it).getMoves().begin();
 		}
 	}
 	return nullptr;
