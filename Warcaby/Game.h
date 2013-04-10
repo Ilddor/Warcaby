@@ -22,6 +22,7 @@ private:
 	EPieceColor m_playerColor;
 	bool m_pvp;
 	bool m_selfgame;
+	bool m_ended;
 	
 	CPiece* m_selected;
 	bool m_multiBeating;
@@ -63,6 +64,7 @@ public:
 	void drawBackground(sf::RenderTarget& window);
 
 	void start();
+	void restart();
 
 	CGame(void);
 	~CGame(void);

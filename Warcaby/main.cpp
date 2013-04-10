@@ -67,6 +67,8 @@ int main()
 		GameObject.drawPieces(Window);
 
 		Window.display();
+
+		GameObject.restart();
 	}
 
 	return 0;

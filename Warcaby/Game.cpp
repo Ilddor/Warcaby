@@ -314,7 +314,7 @@ void CGame::changeTurn()
 			m_lastEvent = "gameEnd";
 			broadcast();
 		}
-
+		m_ended = true;
 		return;
 	}
 	//checkIfNoBeating();
@@ -332,18 +332,21 @@ void CGame::changeTurn()
 			m_lastEvent = "draw";
 			broadcast();
 		}
+		m_ended = true;
 	}
-
-	std::cout << "Zmiana ruchu: " << m_moveFor << std::endl;
-
-	if(m_pvp)
-		m_playerColor = m_moveFor;
 	else
 	{
-		if(m_moveFor != m_playerColor || m_selfgame)
+		std::cout << "Zmiana ruchu: " << m_moveFor << std::endl;
+
+		if(m_pvp)
+			m_playerColor = m_moveFor;
+		else
 		{
-			m_lastEvent = "turn";
-			broadcast();
+			if(m_moveFor != m_playerColor || m_selfgame)
+			{
+				m_lastEvent = "turn";
+				broadcast();
+			}
 		}
 	}
 }
@@ -479,6 +482,7 @@ bool CGame::moveSelectedPiece(int x, int y)
 				{
 					if((*it)->getPosition() == newpos-erasePos)
 					{
+						//delete(*it);
 						m_Pieces.erase(it);
 						normalMove = false;
 						break;
@@ -496,6 +500,7 @@ bool CGame::moveSelectedPiece(int x, int y)
 					{
 						if((*it)->getPosition() == erasePos)
 						{
+							//delete(*it);
 							m_Pieces.erase(it);
 							normalMove = false;
 							break;
@@ -561,10 +566,43 @@ void CGame::start()
 	}
 }
 
+void CGame::restart()
+{
+	if(m_ended)
+	{
+		for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+		{
+			delete(*it);
+		}
+		m_Pieces.clear();
+
+		m_moveFor = EPieceColor::WHITE;
+		m_ended = false;
+		m_selected = nullptr;
+		m_multiBeating = false;
+
+		for(int i = 0; i < 8; ++i)
+		{
+			for(int j = 0; j < 8; ++j)
+			{
+				if((j%2 == 0 && i%2 == 0) || (j%2 == 1 && i%2 == 1))
+				{
+					if(i < 3)
+						m_Pieces.push_back(new CPiece(EPieceColor::BLACK, false, sf::Vector2f(j*100, i*100)));
+					else if(i >= 5)
+						m_Pieces.push_back(new CPiece(EPieceColor::WHITE, false, sf::Vector2f(j*100, i*100)));
+				}
+			}
+		}
+		start();
+	}
+}
+
 CGame::CGame(void)
 {
 	m_selected = nullptr;
 	m_multiBeating = false;
+	m_ended = false;
 	m_moveFor = EPieceColor::WHITE;
 	m_playerColor = EPieceColor::WHITE;
 

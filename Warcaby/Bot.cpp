@@ -4,6 +4,11 @@
 #include "Misc.h"
 #include <Windows.h>
 
+bool CBot::randomDecision()
+{
+	return (rand()%100)<30;
+}
+
 sf::Vector2f CBot::findBeatingMove(CPiece* piece)
 {
 	sf::Vector2f pos = piece->getPosition();
@@ -45,7 +50,7 @@ sf::Vector2f CBot::findBeatingMove(CPiece* piece)
 	//}
 }
 
-CMove* CBot::findNonBeatingMove(bool lookForSafety)
+CMove* CBot::findNonBeatingMove(bool lookForSafety, bool random)
 {
 	for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
 	{
@@ -54,7 +59,7 @@ CMove* CBot::findNonBeatingMove(bool lookForSafety)
 			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(100,100), *it))
 			{
 				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(100,100));
-				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800 && (lookForSafety? !isPositionDangerous(dst, (*it)->getPosition()):true) && (random? randomDecision():true))
 				{
 					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
 				}
@@ -62,7 +67,7 @@ CMove* CBot::findNonBeatingMove(bool lookForSafety)
 			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(-100,100), *it))
 			{
 				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(-100,100));
-				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800 && (lookForSafety? !isPositionDangerous(dst, (*it)->getPosition()):true) && (random? randomDecision():true))
 				{
 					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
 				}
@@ -70,7 +75,7 @@ CMove* CBot::findNonBeatingMove(bool lookForSafety)
 			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(-100,-100), *it))
 			{
 				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(-100,-100));
-				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800 && (lookForSafety? !isPositionDangerous(dst, (*it)->getPosition()):true) && (random? randomDecision():true))
 				{
 					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
 				}
@@ -78,7 +83,7 @@ CMove* CBot::findNonBeatingMove(bool lookForSafety)
 			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(100,-100), *it))
 			{
 				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(100,-100));
-				if(dst.x > 0 && dst.x < 800 && dst.y > 0 && dst.y < 800)
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800 && (lookForSafety? !isPositionDangerous(dst, (*it)->getPosition()):true) && (random? randomDecision():true))
 				{
 					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
 				}
@@ -91,8 +96,8 @@ CMove* CBot::findNonBeatingMove(bool lookForSafety)
 bool CBot::isPositionDangerous(sf::Vector2f pos, sf::Vector2f src)
 {
 	sf::Vector2f dir(100,100);
-	if((pos+dir).x > 0 && (pos+dir).x < 800 && (pos+dir).y > 0 && (pos+dir).y < 800 &&
-		(pos-dir).x > 0 && (pos-dir).x < 800 && (pos-dir).y > 0 && (pos-dir).y < 800)
+	if((pos+dir).x >= 0 && (pos+dir).x < 800 && (pos+dir).y >= 0 && (pos+dir).y < 800 &&
+		(pos-dir).x >= 0 && (pos-dir).x < 800 && (pos-dir).y >= 0 && (pos-dir).y < 800)
 	{
 		bool minus = false, plus = false;
 		bool color = false;
@@ -101,9 +106,11 @@ bool CBot::isPositionDangerous(sf::Vector2f pos, sf::Vector2f src)
 			if((*it)->getPosition() != src)
 			{
 				if((*it)->getPosition() == pos - dir)
+				{
 					minus = true;
-				if((*it)->getColor() != m_color)
-					color = true;
+					if((*it)->getColor() != m_color)
+						color = true;
+				}
 			}
 		}
 		for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
@@ -111,9 +118,11 @@ bool CBot::isPositionDangerous(sf::Vector2f pos, sf::Vector2f src)
 			if((*it)->getPosition() != pos)
 			{
 				if((*it)->getPosition() == pos - dir)
+				{
 					plus = true;
-				if((*it)->getColor() != m_color)
-					color = true;
+					if((*it)->getColor() != m_color)
+						color = true;
+				}
 			}
 		}
 		if(minus != plus && color)
@@ -123,8 +132,8 @@ bool CBot::isPositionDangerous(sf::Vector2f pos, sf::Vector2f src)
 		return false;
 
 	dir = sf::Vector2f(-100,100);
-	if((pos+dir).x > 0 && (pos+dir).x < 800 && (pos+dir).y > 0 && (pos+dir).y < 800 &&
-		(pos-dir).x > 0 && (pos-dir).x < 800 && (pos-dir).y > 0 && (pos-dir).y < 800)
+	if((pos+dir).x >= 0 && (pos+dir).x < 800 && (pos+dir).y >= 0 && (pos+dir).y < 800 &&
+		(pos-dir).x >= 0 && (pos-dir).x < 800 && (pos-dir).y >= 0 && (pos-dir).y < 800)
 	{
 		bool minus = false, plus = false;
 		bool color = false;
@@ -133,9 +142,11 @@ bool CBot::isPositionDangerous(sf::Vector2f pos, sf::Vector2f src)
 			if((*it)->getPosition() != pos)
 			{
 				if((*it)->getPosition() == pos - dir)
+				{
 					minus = true;
-				if((*it)->getColor() != m_color)
-					color = true;
+					if((*it)->getColor() != m_color)
+						color = true;
+				}
 			}
 		}
 		for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
@@ -143,9 +154,11 @@ bool CBot::isPositionDangerous(sf::Vector2f pos, sf::Vector2f src)
 			if((*it)->getPosition() != pos)
 			{
 				if((*it)->getPosition() == pos - dir)
+				{
 					plus = true;
-				if((*it)->getColor() != m_color)
-					color = true;
+					if((*it)->getColor() != m_color)
+						color = true;
+				}
 			}
 		}
 		if(minus != plus && color)
@@ -191,6 +204,11 @@ void CBot::update()
 				move = nullptr;
 			}
 			move = m_mainMemory.findSet(m_gamePtr->getBoard());
+			if(randomDecision())
+			{
+				delete move;
+				move == nullptr;
+			}
 			if(move == nullptr)
 			{
 				std::cout << "Oops! I don't know what to do:( YOLO!" << std::endl;
@@ -208,9 +226,17 @@ void CBot::update()
 				}
 				else
 				{
-					move = findNonBeatingMove(true);
+					move = findNonBeatingMove(true, true);
 					if(move == nullptr)
-						move = findNonBeatingMove(false);
+					{
+						move = findNonBeatingMove(true, false);
+						if(move == nullptr)
+						{
+							move = findNonBeatingMove(false, true);
+							if(move == nullptr)
+								move = findNonBeatingMove(false, false);
+						}
+					}
 				}
 			}
 			else
