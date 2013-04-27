@@ -18,6 +18,8 @@ private:
 	CBotMemory m_mainMemory;
 	CBotMemory m_tmpMemory;
 
+	bool m_merged;
+
 	bool randomDecision();
 	sf::Vector2f findBeatingMove(CPiece* piece);
 	CMove* findNonBeatingMove(bool lookForSafety, bool random);

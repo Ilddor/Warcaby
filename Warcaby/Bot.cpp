@@ -200,7 +200,7 @@ void CBot::update()
 		{
 			if(move != nullptr)
 			{
-				delete move;
+				//delete move;
 				move = nullptr;
 			}
 			move = m_mainMemory.findSet(m_gamePtr->getBoard());
@@ -262,7 +262,11 @@ void CBot::update()
 		  	std::cout << "Well shit :(" << std::endl;
 			//Here we will cry like a little girl and get suicidal thoughts ;-)
 		}
-		m_mainMemory.merge(m_tmpMemory);
+		if(m_merged == false)
+		{
+			m_mainMemory.merge(m_tmpMemory);
+			m_merged = true;
+		}
 	}
 	if(eventName == "playerMove")
 	{
@@ -275,11 +279,16 @@ void CBot::update()
 	}
 	if(eventName == "draw")
 	{
-		m_mainMemory.merge(m_tmpMemory);
+		if(m_merged == false)
+		{
+			m_mainMemory.merge(m_tmpMemory);
+			m_merged = true;
+		}
 	}
 	if(eventName == "gameStart")
 	{
 		m_tmpMemory.addSet(m_gamePtr->getBoard());
+		m_merged = false;
 	}
 }
 
@@ -316,6 +325,7 @@ bool CBot::makeMove(CMove move)
 CBot::CBot(void)
 {
 	m_mainMemory.loadFromFile("data.xml");
+	m_merged = false;
 }
 
 

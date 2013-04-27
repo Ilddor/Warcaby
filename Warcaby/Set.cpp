@@ -44,9 +44,9 @@ void CSet::MergeMoves(CSet& other)
 	//m_moves.merge(other.m_moves);
 	m_moves.insert(m_moves.end(), other.getMoves().begin(), other.getMoves().end());
 	m_moves.unique([](CMove* a, CMove* b)->bool{
-		if((a->getSource() == b ->getSource()) &&
+		if((a->getSource() == b->getSource()) &&
 			(a->getDestination() == b->getDestination()) &&
-			(a->getColor() == b->getColor()))					//check if move has the same parameters (winning doesnt matter)
+			(a->getInfo() == b->getInfo()))					//check if move has the same parameters (winning doesnt matter)
 			return true;
 		else
 			return false;
