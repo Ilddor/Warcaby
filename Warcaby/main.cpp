@@ -21,18 +21,18 @@ int main()
 	GameObject.addListener(&BotObject);
 	BotObject.addGamePtr(&GameObject);
 
-	CBot BotObject2;
+	//CBot BotObject2;
 
-	GameObject.addListener(&BotObject2);
-	BotObject2.addGamePtr(&GameObject);
+	//GameObject.addListener(&BotObject2);
+	//BotObject2.addGamePtr(&GameObject);
 
-	GameObject.setSelfgame(true);
+	/*GameObject.setSelfgame(true);
 	GameObject.setPlayerColor(EPieceColor::BLACK);
 	BotObject.setColor(EPieceColor::BLACK);
-	BotObject2.setColor(EPieceColor::WHITE);
+	BotObject2.setColor(EPieceColor::WHITE);*/
 
 	srand(time(NULL));
-	/*if(rand()%2 == 0)
+	if(rand()%2 == 0)
 	{
 		GameObject.setPlayerColor(EPieceColor::BLACK);
 		BotObject.setColor(EPieceColor::WHITE);
@@ -41,7 +41,7 @@ int main()
 	{
 		GameObject.setPlayerColor(EPieceColor::WHITE);
 		BotObject.setColor(EPieceColor::BLACK);
-	}*/
+	}
 
 
 	GameObject.setPvP(false);
