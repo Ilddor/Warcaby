@@ -211,7 +211,7 @@ void CBot::update()
 			}
 			if(move == nullptr)
 			{
-				std::cout << "Oops! I don't know what to do:( YOLO!" << std::endl;
+				std::cout << "Oops! I don't know what to do!" << std::endl;
 				if(m_gamePtr->checkIfBeating())
 				{
 					for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)

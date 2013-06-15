@@ -39,6 +39,9 @@
     <ClCompile Include="Bot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerTypeFirst.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -80,5 +83,13 @@
     <ClInclude Include="Listener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerTypeFirst.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="data.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

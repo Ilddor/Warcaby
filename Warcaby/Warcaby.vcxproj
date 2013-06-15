@@ -85,6 +85,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Piece.cpp" />
+    <ClCompile Include="PlayerTypeFirst.cpp" />
     <ClCompile Include="Set.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -99,8 +100,14 @@
     <ClInclude Include="Misc.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="Piece.h" />
+    <ClInclude Include="PlayerTypeFirst.h" />
     <ClInclude Include="Set.h" />
     <ClInclude Include="Subject.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="data.xml">
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
