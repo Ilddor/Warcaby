@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Bot.h"
 #include "Set.h"
+#include "PlayerTypeSecond.h"
 
 int main()
 {
@@ -16,11 +17,11 @@ int main()
 
 	GameObject.setWindow(&Window);
 
-	CBot BotObject;
+	///// 2BOT v each other version
+	//CBot BotObject;
 
-	GameObject.addListener(&BotObject);
-	BotObject.addGamePtr(&GameObject);
-
+	//GameObject.addListener(&BotObject);
+	//BotObject.addGamePtr(&GameObject);
 	//CBot BotObject2;
 
 	//GameObject.addListener(&BotObject2);
@@ -30,7 +31,14 @@ int main()
 	GameObject.setPlayerColor(EPieceColor::BLACK);
 	BotObject.setColor(EPieceColor::BLACK);
 	BotObject2.setColor(EPieceColor::WHITE);*/
+	///// 1BOT v player VERSION
+	//CBot BotObject;
 
+	//GameObject.addListener(&BotObject);
+	//BotObject.addGamePtr(&GameObject);
+	CPlayerTypeSecond BotObject;
+	GameObject.addListener(&BotObject);
+	BotObject.addGamePtr(&GameObject);
 	srand(time(NULL));
 	if(rand()%2 == 0)
 	{

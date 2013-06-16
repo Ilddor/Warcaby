@@ -86,6 +86,7 @@
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="PlayerTypeFirst.cpp" />
+    <ClCompile Include="PlayerTypeSecond.cpp" />
     <ClCompile Include="Set.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +102,7 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="PlayerTypeFirst.h" />
+    <ClInclude Include="PlayerTypeSecond.h" />
     <ClInclude Include="Set.h" />
     <ClInclude Include="Subject.h" />
   </ItemGroup>
