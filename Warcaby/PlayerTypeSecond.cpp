@@ -129,29 +129,69 @@ void CPlayerTypeSecond::update()
 					CPiece* randedPiece = getRandomPiece();
 					int randDirection; //0 SE, 1 SW, 2 NE, 3 NW
 					sf::Vector2f dst;
+					bool moveSet[4] = {true, true, true, true};
+					int moduleMultiplier;
+					int lastRandedNumber = -1;
+					if(randedPiece->isKing())
+						moduleMultiplier = 4;
+					else
+						moduleMultiplier = 2;
 					do
 					{
+						if(lastRandedNumber > -1)
+							moveSet[lastRandedNumber] = false;
 						dst = randedPiece->getPosition();
-						randDirection = rand()%4;
-						if(randDirection == 0)
+						do
 						{
-							dst.x += 100;
-							dst.y += 100;
+							randDirection = rand()%moduleMultiplier;
 						}
-						else if(randDirection == 1)
+						while(!moveSet[randDirection]);
+						lastRandedNumber = randDirection;
+						if(m_color == BLACK)
 						{
-							dst.x -= 100;
-							dst.y += 100;
+							if(randDirection == 0)
+							{
+								dst.x += 100;
+								dst.y += 100;
+							}
+							else if(randDirection == 1)
+							{
+								dst.x -= 100;
+								dst.y += 100;
+							}
+							else if(randDirection == 2)
+							{
+								dst.x += 100;
+								dst.y -= 100;
+							}
+							else if(randDirection == 3)
+							{
+								dst.x -= 100;
+								dst.y -= 100;
+							}
 						}
-						else if(randDirection == 2)
+						else
 						{
-							dst.x += 100;
-							dst.y -= 100;
-						}
-						else if(randDirection == 3)
-						{
-							dst.x -= 100;
-							dst.y -= 100;
+							if(randDirection == 0)
+							{
+								dst.x += 100;
+								dst.y -= 100;
+							}
+							else if(randDirection == 1)
+							{
+								dst.x -= 100;
+								dst.y -= 100;
+							}
+							else if(randDirection == 2)
+							{
+								dst.x += 100;
+								dst.y += 100;
+							}
+							else if(randDirection == 3)
+							{
+								dst.x -= 100;
+								dst.y += 100;
+							}
 						}
 					}
 					while(m_gamePtr->isMovePossible(dst,randedPiece));

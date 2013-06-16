@@ -124,63 +124,66 @@ void CGame::mousePressed(sf::Event& event)
 
 bool CGame::isMovePossible(sf::Vector2f pos, CPiece* piece)
 {
-	for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+	if(pos.x/100 >= 0 && pos.x/100 <= 7 && pos.y/100 >= 0 && pos.y/100 <= 7)
 	{
-		if((*it)->getPosition() == pos)			//chack if there is any piece
-			return false;
-	}
-
-	sf::Vector2f tmp = piece->getPosition();
-
-	if(!piece->isKing())
-	{
-		if((((pos - tmp) == sf::Vector2f(100,-100) || (pos - tmp) == sf::Vector2f(-100,-100)) && piece->getColor() == EPieceColor::WHITE) ||
-			(((pos - tmp) == sf::Vector2f(100,100) || (pos - tmp) == sf::Vector2f(-100,100)) && piece->getColor() == EPieceColor::BLACK))
+		for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
 		{
-			return true;
-		}
-
-		if(abs((pos - tmp).x) == 200)
-		{	//if player want to make move over 2 fields we need to check if in between is enemy piece
-			for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
-			{
-				if((*it)->getPosition() == (tmp + (pos - tmp)/2.f) && (*it)->getColor() != piece->getColor())
-					return true;
-			}
-		}
-	}
-	else
-	{
-		if(abs((pos - tmp).x) >= 200 && abs((pos - tmp).x) == abs((pos - tmp).y))
-		{
-			sf::Vector2f gap((pos - tmp).x/(abs((pos - tmp).x)/100), (pos - tmp).y/(abs((pos - tmp).y)/100));
-			sf::Vector2f checkPos = tmp+gap;
-			int skipped = 0;
-
-			while(checkPos != pos)
-			{
-				for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
-				{
-					if((*it)->getPosition() == checkPos)
-					{
-						if((*it)->getColor() != piece->getColor())
-						{
-							++skipped;
-						}
-						else
-							return false;
-					}
-				}
-				checkPos += gap;
-			}
-			if(skipped <= 1)
-				return true;
-			else
+			if((*it)->getPosition() == pos)			//chack if there is any piece
 				return false;
 		}
-		else if(abs((pos - tmp).x) == 100 && abs((pos - tmp).x) == abs((pos - tmp).y))
+
+		sf::Vector2f tmp = piece->getPosition();
+
+		if(!piece->isKing())
 		{
-			return true;
+			if((((pos - tmp) == sf::Vector2f(100,-100) || (pos - tmp) == sf::Vector2f(-100,-100)) && piece->getColor() == EPieceColor::WHITE) ||
+				(((pos - tmp) == sf::Vector2f(100,100) || (pos - tmp) == sf::Vector2f(-100,100)) && piece->getColor() == EPieceColor::BLACK))
+			{
+				return true;
+			}
+
+			if(abs((pos - tmp).x) == 200)
+			{	//if player want to make move over 2 fields we need to check if in between is enemy piece
+				for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+				{
+					if((*it)->getPosition() == (tmp + (pos - tmp)/2.f) && (*it)->getColor() != piece->getColor())
+						return true;
+				}
+			}
+		}
+		else
+		{
+			if(abs((pos - tmp).x) >= 200 && abs((pos - tmp).x) == abs((pos - tmp).y))
+			{
+				sf::Vector2f gap((pos - tmp).x/(abs((pos - tmp).x)/100), (pos - tmp).y/(abs((pos - tmp).y)/100));
+				sf::Vector2f checkPos = tmp+gap;
+				int skipped = 0;
+
+				while(checkPos != pos)
+				{
+					for(auto it = m_Pieces.begin(); it != m_Pieces.end(); ++it)
+					{
+						if((*it)->getPosition() == checkPos)
+						{
+							if((*it)->getColor() != piece->getColor())
+							{
+								++skipped;
+							}
+							else
+								return false;
+						}
+					}
+					checkPos += gap;
+				}
+				if(skipped <= 1)
+					return true;
+				else
+					return false;
+			}
+			else if(abs((pos - tmp).x) == 100 && abs((pos - tmp).x) == abs((pos - tmp).y))
+			{
+				return true;
+			}
 		}
 	}
 
