@@ -17,7 +17,9 @@ private:
 
 	sf::Vector2f findBeatingMove(CPiece* piece);
 	CPiece* getRandomPiece();
+	CMove* findNonBeatingMove();
 	bool isMoveValid(const sf::Vector2f& src, const sf::Vector2f& dst);
+	void myTurn();
 public:
 	void update();
 

@@ -242,10 +242,11 @@ void CBot::update()
 			else
 				std::cout << "Yeah! I know what to do!" << std::endl;
 		}
-		while(!makeMove(*move));
+		while(!makeMove(move));
 	}
 	if(eventName == "gameEnd")
 	{
+		m_gamePtr->m_gamesPlayed++;
 		if(color == EPieceColor::WHITE)
 			m_tmpMemory.addMoveToLastSet(m_gamePtr->getLastMoveSrc().x/100, m_gamePtr->getLastMoveSrc().y/100, m_gamePtr->getLastMoveDst().x/100, m_gamePtr->getLastMoveDst().y/100, false, true);
 		else
@@ -254,12 +255,13 @@ void CBot::update()
 		m_tmpMemory.setWinner(color);
 		if(m_color == color)
 		{
+			m_gamePtr->m_gamesWonByBot++;
 			std::cout << "Yippie!" << std::endl;
 			//Here we will boast about how we just killed that motherfucker
 		}
 		else
 		{
-		  	std::cout << "Well shit :(" << std::endl;
+			std::cout << "Well shit :(" << std::endl;
 			//Here we will cry like a little girl and get suicidal thoughts ;-)
 		}
 		if(m_merged == false)
@@ -267,6 +269,7 @@ void CBot::update()
 			m_mainMemory.merge(m_tmpMemory);
 			m_merged = true;
 		}
+		std::cout << m_gamePtr->m_gamesPlayed << std::endl;
 	}
 	if(eventName == "playerMove")
 	{
@@ -302,24 +305,32 @@ void CBot::setColor(EPieceColor color)
 	m_color = color;
 }
 
-bool CBot::makeMove(CMove move)
+bool CBot::makeMove(CMove* move)
 {
-	int srcx = (move.getSource() & 0x0f);
-	int srcy = (move.getSource() & 0xf0)>>4;
-
-	int dstx = (move.getDestination() & 0x0f);
-	int dsty = (move.getDestination() & 0xf0)>>4;
-
-	if(m_gamePtr->selectPiece(srcx*100, srcy*100))
+	bool returnedValue = false;
+	if(move != nullptr)
 	{
-		if(m_gamePtr->moveSelectedPiece(dstx*100, dsty*100))
+		int srcx = (move->getSource() & 0x0f);
+		int srcy = (move->getSource() & 0xf0)>>4;
+
+		int dstx = (move->getDestination() & 0x0f);
+		int dsty = (move->getDestination() & 0xf0)>>4;
+
+		if(m_gamePtr->selectPiece(srcx*100, srcy*100))
 		{
-			m_gamePtr->changeTurn();
-			m_gamePtr->clearSelect();
-			return true;
+			if(m_gamePtr->moveSelectedPiece(dstx*100, dsty*100))
+			{
+				m_gamePtr->changeTurn();
+				m_gamePtr->clearSelect();
+				returnedValue = true;
+			}
 		}
+		//delete move;
+		if(m_gamePtr->m_gamesPlayed == 8)
+			std::cout << "" << std::endl;
+		move = nullptr;
 	}
-	return false;
+	return returnedValue;
 }
 
 CBot::CBot(void)

@@ -32,7 +32,10 @@ private:
 	std::string m_lastEvent;
 
 	sf::RenderWindow* m_windowPtr;
+
 public:
+	double m_gamesWonByBot;
+	double m_gamesPlayed;
 	void mousePressed(sf::Event& event);
 
 	bool isMovePossible(sf::Vector2f pos, CPiece* piece);

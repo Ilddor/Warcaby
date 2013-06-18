@@ -86,6 +86,83 @@ sf::Vector2f CPlayerTypeSecond::findBeatingMove(CPiece* piece)
 	//}
 }
 
+CMove* CPlayerTypeSecond::findNonBeatingMove()
+{
+	for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
+	{
+		if(m_color == (*it)->getColor())
+		{
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(100,100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(100,100));
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(-100,100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(-100,100));
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(-100,-100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(-100,-100));
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+			if(m_gamePtr->isMovePossible((*it)->getPosition() + sf::Vector2f(100,-100), *it))
+			{
+				sf::Vector2f dst((*it)->getPosition() + sf::Vector2f(100,-100));
+				if(dst.x >= 0 && dst.x < 800 && dst.y >= 0 && dst.y < 800)
+				{
+					return new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false);	// in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+				}
+			}
+		}
+	}
+	return nullptr;
+}
+
+void CPlayerTypeSecond::myTurn()
+{
+	std::cout << "I think I should make a move now" << std::endl;
+	
+	CMove* move = nullptr;
+	do
+	{
+		if(move != nullptr)
+		{
+			//delete move;
+			move = nullptr;
+		}
+		if(move == nullptr)
+		{
+			if(m_gamePtr->checkIfBeating())
+			{
+				for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
+				{
+					if(m_color == (*it)->getColor() && m_gamePtr->isBeatingPossible(*it))
+					{
+						sf::Vector2f dst(findBeatingMove(*it));
+						move = new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false); // in this case winning and color in CMove doesn't matter, we only need to pass coordinates
+						break;
+					}
+				}
+			}
+			else
+			{
+				move = findNonBeatingMove();
+			}
+		}
+	}
+	while(!makeMove(move));
+}
 void CPlayerTypeSecond::update()
 {
 	m_gamePtr->getWindow().clear();
@@ -99,107 +176,7 @@ void CPlayerTypeSecond::update()
 
 	if(eventName == "turn" && m_color == color)
 	{
-		std::cout << "I think I should make a move now" << std::endl;
-		
-		CMove* move = nullptr;
-		do
-		{
-			if(move != nullptr)
-			{
-				//delete move;
-				move = nullptr;
-			}
-			if(move == nullptr)
-			{
-				if(m_gamePtr->checkIfBeating())
-				{
-					for(auto it = m_gamePtr->getBoard().begin(); it != m_gamePtr->getBoard().end(); ++it)
-					{
-						if(m_color == (*it)->getColor() && m_gamePtr->isBeatingPossible(*it))
-						{
-							sf::Vector2f dst(findBeatingMove(*it));
-							move = new CMove((*it)->getPosition().x/100, (*it)->getPosition().y/100, dst.x/100, dst.y/100, false, false); // in this case winning and color in CMove doesn't matter, we only need to pass coordinates
-							break;
-						}
-					}
-				}
-				else
-				{
-					srand(time(NULL));
-					CPiece* randedPiece = getRandomPiece();
-					int randDirection; //0 SE, 1 SW, 2 NE, 3 NW
-					sf::Vector2f dst;
-					bool moveSet[4] = {true, true, true, true};
-					int moduleMultiplier;
-					int lastRandedNumber = -1;
-					if(randedPiece->isKing())
-						moduleMultiplier = 4;
-					else
-						moduleMultiplier = 2;
-					do
-					{
-						if(lastRandedNumber > -1)
-							moveSet[lastRandedNumber] = false;
-						dst = randedPiece->getPosition();
-						do
-						{
-							randDirection = rand()%moduleMultiplier;
-						}
-						while(!moveSet[randDirection]);
-						lastRandedNumber = randDirection;
-						if(m_color == BLACK)
-						{
-							if(randDirection == 0)
-							{
-								dst.x += 100;
-								dst.y += 100;
-							}
-							else if(randDirection == 1)
-							{
-								dst.x -= 100;
-								dst.y += 100;
-							}
-							else if(randDirection == 2)
-							{
-								dst.x += 100;
-								dst.y -= 100;
-							}
-							else if(randDirection == 3)
-							{
-								dst.x -= 100;
-								dst.y -= 100;
-							}
-						}
-						else
-						{
-							if(randDirection == 0)
-							{
-								dst.x += 100;
-								dst.y -= 100;
-							}
-							else if(randDirection == 1)
-							{
-								dst.x -= 100;
-								dst.y -= 100;
-							}
-							else if(randDirection == 2)
-							{
-								dst.x += 100;
-								dst.y += 100;
-							}
-							else if(randDirection == 3)
-							{
-								dst.x -= 100;
-								dst.y += 100;
-							}
-						}
-					}
-					while(m_gamePtr->isMovePossible(dst,randedPiece));
-					move = new CMove(randedPiece->getPosition().x/100, randedPiece->getPosition().y/100, dst.x/100, dst.y/100, false, false); // in this case winning and color in CMove doesn't matter, we only need to pass coordinates
-				}
-			}
-		}
-		while(!makeMove(move));
+		myTurn();
 	}
 	if(eventName == "gameEnd")
 	{
@@ -216,6 +193,7 @@ void CPlayerTypeSecond::update()
 	if(eventName == "gameStart")
 	{
 		std::cout << "Lets roll" << std::endl;
+		myTurn();
 	}
 }
 

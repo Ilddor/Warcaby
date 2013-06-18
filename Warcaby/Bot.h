@@ -30,7 +30,7 @@ public:
 	void addGamePtr(CGame* ptr);
 
 	void setColor(EPieceColor color);
-	bool makeMove(CMove move);
+	bool makeMove(CMove* move);
 
 	CBot(void);
 	~CBot(void);

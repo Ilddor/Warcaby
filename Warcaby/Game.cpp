@@ -603,6 +603,8 @@ void CGame::restart()
 
 CGame::CGame(void)
 {
+	m_gamesPlayed = 0;
+	m_gamesWonByBot = 0;
 	m_selected = nullptr;
 	m_multiBeating = false;
 	m_ended = false;
